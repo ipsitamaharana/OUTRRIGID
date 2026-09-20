@@ -31,15 +31,26 @@ document.addEventListener("DOMContentLoaded", () => {
     btnExportData: document.getElementById("btnExportData"),
     backendStatusBadge: document.getElementById("backendStatusBadge"),
 
-    // Pan-India State Selector
+    // Pan-India Geoclimatic Hub
     selectIndianState: document.getElementById("selectIndianState"),
     badgeStateZone: document.getElementById("badgeStateZone"),
     badgeDayTemp: document.getElementById("badgeDayTemp"),
+    geoDayTempDisplay: document.getElementById("geoDayTempDisplay"),
+    geoNightTempDisplay: document.getElementById("geoNightTempDisplay"),
+    geoZoneDescription: document.getElementById("geoZoneDescription"),
+    geoStateVal: document.getElementById("geoStateVal"),
+    geoRegionVal: document.getElementById("geoRegionVal"),
+    geoCbrVal: document.getElementById("geoCbrVal"),
+    geoTrafficVal: document.getElementById("geoTrafficVal"),
+    geoPillCbr: document.getElementById("geoPillCbr"),
     badgeBucTemp: document.getElementById("badgeBucTemp"),
     badgeTdcTemp: document.getElementById("badgeTdcTemp"),
 
-    // KPI Displays
+    // KPI & Trial Controller Displays
     sliderThickness: document.getElementById("sliderThickness"),
+    inputNumericThickness: document.getElementById("inputNumericThickness"),
+    btnStepMinus: document.getElementById("btnStepMinus"),
+    btnStepPlus: document.getElementById("btnStepPlus"),
     displayThickness: document.getElementById("displayThickness"),
     displayRadiusL: document.getElementById("displayRadiusL"),
     displayEffectiveK: document.getElementById("displayEffectiveK"),
@@ -50,13 +61,14 @@ document.addEventListener("DOMContentLoaded", () => {
     safetyBadge: document.getElementById("safetyBadge"),
     cfdMeterFill: document.getElementById("cfdMeterFill"),
     kpiFinalThickness: document.getElementById("kpiFinalThickness"),
+    gaugePctLabel: document.getElementById("gaugePctLabel"),
 
-    // Tabs
-    tabBtns: document.querySelectorAll(".tab-btn"),
-    tabPanes: document.querySelectorAll(".tab-pane"),
+    // Workspaces and Tabs
+    workspaceBtns: document.querySelectorAll(".workspace-nav-btn, .tab-btn"),
+    workspacePanes: document.querySelectorAll(".workspace-pane, .tab-pane"),
+    subnavBtns: document.querySelectorAll(".subnav-btn"),
+    subtabPanes: document.querySelectorAll(".subtab-pane"),
 
-    // Visualizer Controls
-    btnModeDay: document.getElementById("btnModeDay"),
     // Visualizer Controls
     btnModeDay: document.getElementById("btnModeDay"),
     btnModeNight: document.getElementById("btnModeNight"),
@@ -138,6 +150,282 @@ document.addEventListener("DOMContentLoaded", () => {
     totalCfdSummaryContainer: document.getElementById("totalCfdSummaryContainer")
   };
 
+  // ==========================================================================
+  // High Z-Index Custom Dropdown Enhancement System
+  // ==========================================================================
+  function initCustomSelects() {
+    const selects = document.querySelectorAll("select.form-select");
+    selects.forEach((selectEl) => {
+      enhanceSelect(selectEl);
+    });
+  }
+
+  function enhanceSelect(selectEl) {
+    if (!selectEl) return;
+    if (selectEl.dataset.customEnhanced === "true") {
+      syncCustomSelectOptions(selectEl);
+      return;
+    }
+    selectEl.dataset.customEnhanced = "true";
+    selectEl.classList.add("custom-select-native-hidden");
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "custom-select-container";
+    selectEl.parentNode.insertBefore(wrapper, selectEl);
+    wrapper.appendChild(selectEl);
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "custom-select-trigger";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+
+    const valueSpan = document.createElement("span");
+    valueSpan.className = "custom-select-value";
+
+    const chevronSpan = document.createElement("span");
+    chevronSpan.className = "custom-select-chevron";
+    chevronSpan.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+    trigger.appendChild(valueSpan);
+    trigger.appendChild(chevronSpan);
+    wrapper.appendChild(trigger);
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "custom-select-dropdown";
+
+    let searchInput = null;
+    const isSearchable = selectEl.options.length > 20;
+    if (isSearchable) {
+      const searchWrap = document.createElement("div");
+      searchWrap.className = "custom-select-search-wrap";
+      searchWrap.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+      searchInput = document.createElement("input");
+      searchInput.type = "text";
+      searchInput.className = "custom-select-search-input";
+      searchInput.placeholder = "Filter options...";
+      searchWrap.appendChild(searchInput);
+      dropdown.appendChild(searchWrap);
+    }
+
+    const optionsList = document.createElement("div");
+    optionsList.className = "custom-select-options";
+    dropdown.appendChild(optionsList);
+    wrapper.appendChild(dropdown);
+
+    selectEl._customSelect = {
+      wrapper,
+      trigger,
+      valueSpan,
+      dropdown,
+      optionsList,
+      searchInput
+    };
+
+    syncCustomSelectOptions(selectEl);
+
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = wrapper.classList.contains("is-open");
+      closeAllCustomSelects();
+      if (!isOpen) {
+        openCustomSelect(selectEl);
+      }
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const optionItems = optionsList.querySelectorAll(".custom-select-option");
+        let visibleCount = 0;
+        optionItems.forEach((item) => {
+          const text = item.dataset.text.toLowerCase();
+          if (text.includes(query)) {
+            item.style.display = "flex";
+            visibleCount++;
+          } else {
+            item.style.display = "none";
+          }
+        });
+
+        let emptyMsg = optionsList.querySelector(".custom-select-empty");
+        if (visibleCount === 0) {
+          if (!emptyMsg) {
+            emptyMsg = document.createElement("div");
+            emptyMsg.className = "custom-select-empty";
+            emptyMsg.textContent = "No matching options found";
+            optionsList.appendChild(emptyMsg);
+          }
+          emptyMsg.style.display = "block";
+        } else if (emptyMsg) {
+          emptyMsg.style.display = "none";
+        }
+      });
+
+      searchInput.addEventListener("click", (e) => e.stopPropagation());
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAllCustomSelects();
+      });
+    }
+
+    selectEl.addEventListener("change", () => {
+      updateTriggerLabel(selectEl);
+      highlightSelectedOption(selectEl);
+    });
+  }
+
+  function openCustomSelect(selectEl) {
+    if (!selectEl || !selectEl._customSelect) return;
+    const { wrapper, trigger, searchInput, optionsList } = selectEl._customSelect;
+    wrapper.classList.add("is-open");
+    trigger.setAttribute("aria-expanded", "true");
+
+    if (searchInput) {
+      searchInput.value = "";
+      const optionItems = optionsList.querySelectorAll(".custom-select-option");
+      optionItems.forEach((item) => (item.style.display = "flex"));
+      const emptyMsg = optionsList.querySelector(".custom-select-empty");
+      if (emptyMsg) emptyMsg.style.display = "none";
+      setTimeout(() => searchInput.focus(), 60);
+    }
+
+    const activeOption = optionsList.querySelector(".custom-select-option.is-selected");
+    if (activeOption) {
+      activeOption.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function closeAllCustomSelects() {
+    document.querySelectorAll(".custom-select-container.is-open").forEach((wrapper) => {
+      wrapper.classList.remove("is-open");
+      const trigger = wrapper.querySelector(".custom-select-trigger");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  document.addEventListener("click", () => {
+    closeAllCustomSelects();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAllCustomSelects();
+    }
+  });
+
+  function syncCustomSelectOptions(selectEl) {
+    if (!selectEl || !selectEl._customSelect) return;
+    const { optionsList } = selectEl._customSelect;
+    optionsList.innerHTML = "";
+
+    Array.from(selectEl.options).forEach((opt, idx) => {
+      const optDiv = document.createElement("div");
+      optDiv.className = `custom-select-option ${opt.selected ? "is-selected" : ""}`;
+      optDiv.dataset.value = opt.value;
+      optDiv.dataset.index = idx;
+      optDiv.dataset.text = opt.text;
+
+      const labelWrap = document.createElement("div");
+      labelWrap.className = "custom-select-option-label";
+
+      const rawText = opt.text;
+      const parenMatch = rawText.match(/^(.*?)\s*(\(.*?\))$/);
+      if (parenMatch) {
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "custom-select-main";
+        titleSpan.textContent = parenMatch[1].trim();
+        const subSpan = document.createElement("span");
+        subSpan.className = "custom-select-sub";
+        subSpan.textContent = parenMatch[2];
+        labelWrap.appendChild(titleSpan);
+        labelWrap.appendChild(subSpan);
+      } else {
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "custom-select-main";
+        titleSpan.textContent = rawText;
+        labelWrap.appendChild(titleSpan);
+      }
+
+      const checkIcon = document.createElement("span");
+      checkIcon.className = "custom-select-check";
+      checkIcon.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+      optDiv.appendChild(labelWrap);
+      optDiv.appendChild(checkIcon);
+
+      optDiv.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        selectEl.value = opt.value;
+        selectEl.selectedIndex = idx;
+        updateTriggerLabel(selectEl);
+        highlightSelectedOption(selectEl);
+        closeAllCustomSelects();
+
+        selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+        selectEl.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+
+      optionsList.appendChild(optDiv);
+    });
+
+    updateTriggerLabel(selectEl);
+  }
+
+  function updateTriggerLabel(selectEl) {
+    if (!selectEl || !selectEl._customSelect) return;
+    const { valueSpan } = selectEl._customSelect;
+    const selectedOpt = selectEl.options[selectEl.selectedIndex];
+    if (!selectedOpt) {
+      valueSpan.textContent = "Select...";
+      return;
+    }
+    valueSpan.textContent = selectedOpt.text;
+  }
+
+  function highlightSelectedOption(selectEl) {
+    if (!selectEl || !selectEl._customSelect) return;
+    const { optionsList } = selectEl._customSelect;
+    const selectedIndex = selectEl.selectedIndex;
+    const optionItems = optionsList.querySelectorAll(".custom-select-option");
+    optionItems.forEach((item, idx) => {
+      if (idx === selectedIndex) {
+        item.classList.add("is-selected");
+      } else {
+        item.classList.remove("is-selected");
+      }
+    });
+  }
+
+  function updateAllCustomSelects() {
+    document.querySelectorAll("select.form-select").forEach((selectEl) => {
+      updateTriggerLabel(selectEl);
+      highlightSelectedOption(selectEl);
+    });
+  }
+
+  const ZONE_DESCRIPTIONS = {
+    "I": "Hilly & High-Altitude Terrains",
+    "II": "Northern & Western Plains",
+    "III": "Gangetic Plains & Eastern Delta",
+    "IV": "Central & Deccan Plateau",
+    "V": "Southern Inland & Highlands",
+    "VI": "Western Coastal Belt (Ghats)",
+    "VII": "Eastern & Open Coastal Plains"
+  };
+
+  function updateGeoclimaticPills(item) {
+    if (!item) return;
+    if (el.geoStateVal) el.geoStateVal.textContent = item.state;
+    if (el.geoRegionVal) el.geoRegionVal.textContent = item.region;
+    if (el.geoCbrVal) el.geoCbrVal.textContent = `${item.defaultCbr || 8.0}%`;
+    if (el.geoTrafficVal) el.geoTrafficVal.textContent = `${(item.defaultCvpd || 3000).toLocaleString()} CVPD`;
+    if (el.geoZoneDescription) {
+      el.geoZoneDescription.textContent = ZONE_DESCRIPTIONS[item.zone] || `IRC:58 Zone ${item.zone}`;
+    }
+  }
+
   // Populate Indian States Dropdown (All 28 States & UTs)
   function populateStatesDropdown() {
     if (!el.selectIndianState || !IRC58_DATA.indianStates) return;
@@ -147,24 +435,37 @@ document.addEventListener("DOMContentLoaded", () => {
         return `<option value="${idx}" ${isSelected ? "selected" : ""}>${item.state} — ${item.region} (Zone ${item.zone})</option>`;
       })
       .join("");
+    enhanceSelect(el.selectIndianState);
+
+    const activeItem = IRC58_DATA.indianStates.find(
+      (item) => item.state === currentParams.selectedState && item.region === currentParams.selectedRegion
+    ) || IRC58_DATA.indianStates[0];
+    updateGeoclimaticPills(activeItem);
   }
+
+  const ICON_SUN = '<svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+  const ICON_MOON = '<svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+  const ICON_CHECK = '<svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  const ICON_INFO = '<svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  const ICON_CLIPBOARD = '<svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>';
+  const ICON_BOLT = '<svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
 
   // Theme Management (Light by default, toggleable to Dark)
   function initTheme() {
     const savedTheme = localStorage.getItem("jpcp_theme") || "light";
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark-theme");
-      if (el.themeToggleIcon) el.themeToggleIcon.textContent = "☀️";
+      if (el.themeToggleIcon) el.themeToggleIcon.innerHTML = ICON_SUN;
     } else {
       document.documentElement.classList.remove("dark-theme");
-      if (el.themeToggleIcon) el.themeToggleIcon.textContent = "🌙";
+      if (el.themeToggleIcon) el.themeToggleIcon.innerHTML = ICON_MOON;
     }
 
     if (el.btnThemeToggle) {
       el.btnThemeToggle.addEventListener("click", () => {
         const isDark = document.documentElement.classList.toggle("dark-theme");
         localStorage.setItem("jpcp_theme", isDark ? "dark" : "light");
-        if (el.themeToggleIcon) el.themeToggleIcon.textContent = isDark ? "☀️" : "🌙";
+        if (el.themeToggleIcon) el.themeToggleIcon.innerHTML = isDark ? ICON_SUN : ICON_MOON;
         if (visualizer) visualizer.renderCrossSection();
       });
     }
@@ -175,14 +476,12 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((res) => res.json())
     .then(() => {
       if (el.backendStatusBadge) {
-        el.backendStatusBadge.innerHTML = "⚡ Express Server Connected";
-        el.backendStatusBadge.style.background = "rgba(5, 150, 105, 0.15)";
-        el.backendStatusBadge.style.color = "#059669";
+        el.backendStatusBadge.innerHTML = '<span class="status-dot online"></span><span>Engine Connected</span>';
       }
     })
     .catch(() => {
       if (el.backendStatusBadge) {
-        el.backendStatusBadge.innerHTML = "💻 Standalone Client Mode";
+        el.backendStatusBadge.innerHTML = '<span class="status-dot offline"></span><span>Offline Mode</span>';
       }
     });
 
@@ -191,6 +490,7 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   function syncInputsFromState() {
     if (el.sliderThickness) el.sliderThickness.value = currentParams.trialThickness;
+    if (el.inputNumericThickness) el.inputNumericThickness.value = currentParams.trialThickness;
     if (el.inputProjectName) el.inputProjectName.value = currentParams.projectName || "National Highway Rigid Pavement Project";
 
     // Road Geometry & Lanes
@@ -275,6 +575,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Traffic mode buttons styling
     updateModeButtons();
+
+    // Sync all custom dropdown UI components
+    updateAllCustomSelects();
   }
 
   function updateWheelbaseBadge(vDist, jSpacing) {
@@ -282,11 +585,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (vDist <= jSpacing) {
       el.badgeWheelbaseStatus.style.background = "rgba(234, 88, 12, 0.1)";
       el.badgeWheelbaseStatus.style.borderColor = "rgba(234, 88, 12, 0.35)";
-      el.badgeWheelbaseStatus.innerHTML = `<span>⚠️</span><span><strong>CRITICAL FOR TDC:</strong> Vehicle wheelbase (<strong>${vDist} m</strong>) &le; joint spacing (<strong>${jSpacing} m</strong>) &mdash; both steering and drive axles occupy the same slab panel simultaneously during night curling.</span>`;
+      el.badgeWheelbaseStatus.innerHTML = `<span>${ICON_INFO}</span><span><strong>CRITICAL FOR TDC:</strong> Vehicle wheelbase (<strong>${vDist} m</strong>) &le; joint spacing (<strong>${jSpacing} m</strong>) &mdash; both steering and drive axles occupy the same slab panel simultaneously during night curling.</span>`;
     } else {
       el.badgeWheelbaseStatus.style.background = "rgba(5, 150, 105, 0.1)";
       el.badgeWheelbaseStatus.style.borderColor = "rgba(5, 150, 105, 0.35)";
-      el.badgeWheelbaseStatus.innerHTML = `<span>✓</span><span>Vehicle wheelbase (<strong>${vDist} m</strong>) &gt; joint spacing (<strong>${jSpacing} m</strong>) &mdash; lower probability of simultaneous dual-axle panel loading.</span>`;
+      el.badgeWheelbaseStatus.innerHTML = `<span>${ICON_CHECK}</span><span>Vehicle wheelbase (<strong>${vDist} m</strong>) &gt; joint spacing (<strong>${jSpacing} m</strong>) &mdash; lower probability of simultaneous dual-axle panel loading.</span>`;
     }
   }
 
@@ -294,14 +597,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!el.btnModeUserInput || !el.btnModeBenchmark) return;
     if (currentParams.useWorkbookExactTraffic) {
       el.btnModeBenchmark.className = "btn btn-primary";
-      el.btnModeBenchmark.textContent = "📋 IRC:58 Benchmark Fixed Dataset (Active)";
+      el.btnModeBenchmark.innerHTML = `${ICON_CLIPBOARD} IRC:58 Benchmark Fixed Dataset (Active)`;
       el.btnModeUserInput.className = "btn btn-secondary";
-      el.btnModeUserInput.textContent = "⚡ Switch to User-Entered Data";
+      el.btnModeUserInput.innerHTML = `${ICON_BOLT} Switch to User-Entered Data`;
     } else {
       el.btnModeUserInput.className = "btn btn-primary";
-      el.btnModeUserInput.textContent = "⚡ User-Entered Traffic Data (Active)";
+      el.btnModeUserInput.innerHTML = `${ICON_BOLT} User-Entered Traffic Data (Active)`;
       el.btnModeBenchmark.className = "btn btn-secondary";
-      el.btnModeBenchmark.textContent = "📋 Compare with Benchmark";
+      el.btnModeBenchmark.innerHTML = `${ICON_CLIPBOARD} Compare with Benchmark`;
     }
   }
 
@@ -397,9 +700,14 @@ document.addEventListener("DOMContentLoaded", () => {
       barType: "deformed"
     });
 
-    // 3. Update State Badges
+    // 3. Update State Badges & Geoclimatic Telemetry Cards
     if (el.badgeStateZone) el.badgeStateZone.textContent = `Zone ${result.inputs.zone}`;
     if (el.badgeDayTemp) el.badgeDayTemp.textContent = `+${result.derived.dayDeltaT}°C Day / -${result.derived.nightDeltaT}°C Night`;
+    if (el.geoDayTempDisplay) el.geoDayTempDisplay.textContent = `+${result.derived.dayDeltaT}°C`;
+    if (el.geoNightTempDisplay) el.geoNightTempDisplay.textContent = `-${result.derived.nightDeltaT}°C`;
+    if (el.geoZoneDescription) {
+      el.geoZoneDescription.textContent = ZONE_DESCRIPTIONS[result.inputs.zone] || `IRC:58 Zone ${result.inputs.zone}`;
+    }
     if (el.badgeBucTemp) el.badgeBucTemp.textContent = `POSITIVE TEMP DIFF: ΔT = ${result.derived.dayDeltaT}°C`;
     if (el.badgeTdcTemp) el.badgeTdcTemp.textContent = `EFFECTIVE NEGATIVE ΔT = ${result.derived.nightDeltaT}°C (INCL. 5°C PERM CURL)`;
 
@@ -428,25 +736,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const s = result.summary;
 
     if (el.displayThickness) el.displayThickness.textContent = `${s.trialThicknessMm} mm`;
+    if (el.inputNumericThickness && document.activeElement !== el.inputNumericThickness) {
+      el.inputNumericThickness.value = s.trialThicknessMm;
+    }
+    if (el.sliderThickness && document.activeElement !== el.sliderThickness) {
+      el.sliderThickness.value = s.trialThicknessMm;
+    }
     if (el.kpiFinalThickness) el.kpiFinalThickness.textContent = `${s.finalThicknessMm} mm (+10mm wear)`;
     if (el.displayRadiusL) el.displayRadiusL.textContent = `${d.lMeters.toFixed(3)} m`;
-    if (el.displayEffectiveK) el.displayEffectiveK.textContent = `${d.effectiveK.toFixed(2)} MPa/m`;
+    if (el.displayEffectiveK) el.displayEffectiveK.textContent = `${d.effectiveK.toFixed(2)}`;
     if (el.displayCfdBuc) el.displayCfdBuc.textContent = result.buc.totalBUCDamage.toFixed(3);
     if (el.displayCfdTdc) el.displayCfdTdc.textContent = result.tdc.totalTDCDamage.toFixed(3);
     if (el.displayTotalCfd) el.displayTotalCfd.textContent = s.totalCFD.toFixed(3);
 
-    // Safety badge and meter
+    const fillPct = Math.min(100, Math.max(0, s.totalCFD * 100));
+    if (el.gaugePctLabel) {
+      el.gaugePctLabel.textContent = `${fillPct.toFixed(1)}% Capacity Used`;
+    }
+
+    // Safety verdict node and capacity meter
     if (el.safetyCard && el.safetyBadge && el.cfdMeterFill) {
       if (s.isSafe) {
-        el.safetyCard.className = "kpi-card safety-card safe";
-        el.safetyBadge.innerHTML = `<span>✓ SAFE</span> <span style="font-size:11px;font-weight:normal;">(CFD = ${s.totalCFD.toFixed(3)} &le; 1.0)</span>`;
-        el.cfdMeterFill.style.backgroundColor = "#059669";
+        el.safetyCard.className = "pipeline-node node-verdict";
+        el.safetyBadge.innerHTML = '<svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>SAFE DESIGN</span>';
+        el.cfdMeterFill.style.backgroundColor = "var(--accent-emerald)";
       } else {
-        el.safetyCard.className = "kpi-card safety-card unsafe";
-        el.safetyBadge.innerHTML = `<span>✕ UNSAFE</span> <span style="font-size:11px;font-weight:normal;">(CFD = ${s.totalCFD.toFixed(3)} &gt; 1.0)</span>`;
-        el.cfdMeterFill.style.backgroundColor = "#e11d48";
+        el.safetyCard.className = "pipeline-node node-verdict unsafe";
+        el.safetyBadge.innerHTML = '<svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>UNSAFE DESIGN</span>';
+        el.cfdMeterFill.style.backgroundColor = "var(--accent-rose)";
       }
-      const fillPct = Math.min(100, Math.max(0, s.totalCFD * 100));
       el.cfdMeterFill.style.width = `${fillPct}%`;
     }
   }
@@ -635,7 +953,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div style="text-align:right;">
           <div class="safety-status-badge" style="font-size:15px; padding:8px 20px;">
-            ${s.isSafe ? "✓ SAFE DESIGN" : "✕ UNSAFE DESIGN"}
+            ${s.isSafe ? "SAFE DESIGN" : "UNSAFE DESIGN"}
           </div>
           <div style="font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--text-muted); margin-top:4px;">
             ${s.isSafe ? "Adequate structural life under IRC:58 fatigue" : "Increase trial thickness to reduce top/bottom stresses"}
@@ -722,7 +1040,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td><strong style="color:var(--accent-cyan); font-size:14px;">${optThickness} mm</strong></td>
           <td>${optThickness + 10} mm</td>
           <td><strong style="color:${isSafe ? "var(--status-safe-text)" : "var(--status-danger-text)"};">${optCFD.toFixed(3)}</strong></td>
-          <td><span class="safety-status-badge" style="font-size:11px; padding:3px 10px;">${isSafe ? "✓ OPTIMAL" : "CHECK"}</span></td>
+          <td><span class="safety-status-badge" style="font-size:11px; padding:3px 10px;">${isSafe ? "OPTIMAL" : "CHECK"}</span></td>
         </tr>
       `;
       })
@@ -736,7 +1054,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let bestThickness = null;
 
     if (el.btnAutoOptimize) {
-      el.btnAutoOptimize.innerHTML = "<span>⏳ Solving IRC:58 Equations...</span>";
+      el.btnAutoOptimize.innerHTML = "<span>Solving IRC:58 Equations...</span>";
       el.btnAutoOptimize.style.opacity = "0.7";
     }
 
@@ -757,10 +1075,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (el.btnAutoOptimize) {
-        el.btnAutoOptimize.innerHTML = "<span>✓ Optimal Found: " + bestThickness + " mm</span>";
+        el.btnAutoOptimize.innerHTML = "<span>Optimal: " + bestThickness + " mm</span>";
         el.btnAutoOptimize.style.opacity = "1";
         setTimeout(() => {
-          el.btnAutoOptimize.innerHTML = "<span>⚡ Auto-Optimize Thickness</span>";
+          el.btnAutoOptimize.innerHTML = `${ICON_BOLT} Auto-Optimize Thickness`;
         }, 2500);
       }
     }, 200);
@@ -781,15 +1099,75 @@ document.addEventListener("DOMContentLoaded", () => {
         currentParams.zone = selected.zone;
         currentParams.projectName = `${selected.state} Highway Pavement Project (${selected.region})`;
         if (el.selectZone) el.selectZone.value = selected.zone;
+        updateGeoclimaticPills(selected);
         runCalculationPipeline();
       }
     });
   }
 
-  // Slider Reactivity
+  // Interactive quick-click on CBR pill to apply recommended CBR
+  if (el.geoPillCbr) {
+    el.geoPillCbr.style.cursor = "pointer";
+    el.geoPillCbr.addEventListener("click", () => {
+      const idx = parseInt(el.selectIndianState?.value || "0", 10);
+      const selected = IRC58_DATA.indianStates[idx];
+      if (selected && selected.defaultCbr) {
+        currentParams.subgradeCBR = selected.defaultCbr;
+        if (el.inputCbr) el.inputCbr.value = selected.defaultCbr;
+        runCalculationPipeline();
+      }
+    });
+  }
+
+  // Slab Thickness Controls: Slider, Direct Numeric Input & Steppers
   if (el.sliderThickness) {
     el.sliderThickness.addEventListener("input", (e) => {
-      currentParams.trialThickness = parseFloat(e.target.value);
+      const val = parseFloat(e.target.value);
+      currentParams.trialThickness = val;
+      if (el.inputNumericThickness) el.inputNumericThickness.value = val;
+      runCalculationPipeline();
+    });
+  }
+
+  if (el.inputNumericThickness) {
+    el.inputNumericThickness.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value);
+      if (!isNaN(val) && val >= 100 && val <= 700) {
+        currentParams.trialThickness = val;
+        if (el.sliderThickness) el.sliderThickness.value = val;
+        runCalculationPipeline();
+      }
+    });
+
+    el.inputNumericThickness.addEventListener("change", (e) => {
+      let val = parseFloat(e.target.value);
+      if (isNaN(val)) val = 310;
+      val = Math.max(100, Math.min(700, val));
+      e.target.value = val;
+      currentParams.trialThickness = val;
+      if (el.sliderThickness) el.sliderThickness.value = val;
+      runCalculationPipeline();
+    });
+  }
+
+  if (el.btnStepMinus) {
+    el.btnStepMinus.addEventListener("click", () => {
+      const current = currentParams.trialThickness || 310;
+      const next = Math.max(100, current - 5);
+      currentParams.trialThickness = next;
+      if (el.sliderThickness) el.sliderThickness.value = next;
+      if (el.inputNumericThickness) el.inputNumericThickness.value = next;
+      runCalculationPipeline();
+    });
+  }
+
+  if (el.btnStepPlus) {
+    el.btnStepPlus.addEventListener("click", () => {
+      const current = currentParams.trialThickness || 310;
+      const next = Math.min(700, current + 5);
+      currentParams.trialThickness = next;
+      if (el.sliderThickness) el.sliderThickness.value = next;
+      if (el.inputNumericThickness) el.inputNumericThickness.value = next;
       runCalculationPipeline();
     });
   }
@@ -801,18 +1179,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Tab Switching
-  el.tabBtns.forEach((btn) => {
+  // Primary Workspace Switching
+  el.workspaceBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      el.tabBtns.forEach((b) => b.classList.remove("active"));
-      el.tabPanes.forEach((p) => p.classList.remove("active"));
+      el.workspaceBtns.forEach((b) => b.classList.remove("active"));
+      el.workspacePanes.forEach((p) => p.classList.remove("active"));
       btn.classList.add("active");
-      const targetId = btn.getAttribute("data-tab");
+      const targetId = btn.getAttribute("data-workspace") || btn.getAttribute("data-tab");
       const targetPane = document.getElementById(targetId);
-      if (targetPane) targetPane.classList.add("active");
+      if (targetPane) {
+        targetPane.classList.add("active");
+      }
 
-      if (targetId === "tabVisualizer" && visualizer) {
-        visualizer.resizeCanvas();
+      if ((targetId === "ws-studio" || targetId === "tabVisualizer") && visualizer) {
+        setTimeout(() => visualizer.resizeCanvas(), 50);
+      }
+    });
+  });
+
+  // Secondary Sub-Navigation Pill Switching
+  el.subnavBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const parentContainer = btn.closest(".subnav-container") || btn.closest(".workspace-pane");
+      if (!parentContainer) return;
+      const siblingBtns = parentContainer.querySelectorAll(".subnav-btn");
+      siblingBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const targetSubtabId = btn.getAttribute("data-subtab");
+      const parentWorkspace = btn.closest(".workspace-pane") || document;
+      const siblingPanes = parentWorkspace.querySelectorAll(".subtab-pane");
+      siblingPanes.forEach((p) => p.classList.remove("active"));
+
+      const targetSubtab = parentWorkspace.querySelector(`#${targetSubtabId}`);
+      if (targetSubtab) {
+        targetSubtab.classList.add("active");
       }
     });
   });
@@ -1043,22 +1444,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Reset Button
-  if (el.btnReset) {
-    el.btnReset.addEventListener("click", () => {
+  // Reset Buttons
+  document.querySelectorAll("#btnReset, .btn-reset-trigger").forEach(btn => {
+    btn.addEventListener("click", () => {
       currentParams = { ...IRC58_DATA.benchmark };
       populateStatesDropdown();
       syncInputsFromState();
       runCalculationPipeline();
     });
-  }
+  });
 
-  // Print PDF Button
-  if (el.btnPrint) {
-    el.btnPrint.addEventListener("click", () => {
+  // Print PDF Buttons (supports all print triggers across workspaces)
+  document.querySelectorAll("#btnPrint, #btnPrintVariants, .btn-print-trigger").forEach(btn => {
+    btn.addEventListener("click", () => {
       window.print();
     });
-  }
+  });
 
   // Export JSON Button
   if (el.btnExportData) {
@@ -1077,6 +1478,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize
   initTheme();
   populateStatesDropdown();
+  initCustomSelects();
   syncInputsFromState();
   runCalculationPipeline();
 });

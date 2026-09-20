@@ -229,7 +229,7 @@ class PavementVisualizer {
     ctx.font = "700 13px 'Plus Jakarta Sans', sans-serif";
     const dayText = this.currentData ? `Day Temp Diff: +${this.currentData.derived.dayDeltaT}°C` : "Day Temp Diff: +16.8°C";
     const nightText = this.currentData ? `Night Temp Diff: -${this.currentData.derived.nightDeltaT}°C (incl. 5°C curl)` : "Night Temp Diff: -13.4°C";
-    ctx.fillText(isDay ? "☀️ DAYTIME POSITIVE GRADIENT" : "🌙 NIGHTTIME NEGATIVE GRADIENT", 26, 36);
+    ctx.fillText(isDay ? "DAYTIME POSITIVE GRADIENT" : "NIGHTTIME NEGATIVE GRADIENT", 26, 36);
     ctx.fillStyle = isDay ? "#c2410c" : "#0369a1";
     ctx.font = "12px 'JetBrains Mono', monospace";
     ctx.fillText(isDay ? dayText : nightText, 26, 54);

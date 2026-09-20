@@ -17,6 +17,9 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/outr-logo.png">
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -24,211 +27,296 @@
 <body>
 
   <div class="app-wrapper">
-    <!-- Header Bar -->
+    <!-- Header Bar with Brand on Left & 4 Workspaces Sticking to the Right -->
     <header class="header-container">
       <div class="logo-group">
-        <div class="logo-badge">🛣️</div>
+        <div class="logo-badge" title="Odisha University of Technology and Research - OUTRRIGID">
+          <img src="assets/images/outr-logo.png" alt="OUTR Logo" class="logo-img">
+        </div>
         <div class="title-group">
-          <h1>Pan-India JPCP Stress & Fatigue Studio</h1>
-          <p>Mechanistic Rigid Pavement Design for All States &bull; <span class="code-tag">IRC:58:2015</span> &bull;
-            <span id="backendStatusBadge" class="code-tag"
-              style="background:rgba(5,150,105,0.1); color:#059669; border-color:rgba(5,150,105,0.25);">⚡ Engine
-              Ready</span></p>
+          <div class="title-row">
+            <h1>OUTRRIGID</h1>
+            <span class="header-version-pill">IRC:58</span>
+          </div>
+          <p class="header-desc">JPCP Stress Studio</p>
         </div>
       </div>
 
-      <div class="header-actions">
-        <!-- Theme Toggle (Light / Dark) -->
-        <button id="btnThemeToggle" class="btn-theme-toggle" title="Toggle Light / Dark Mode">
-          <span id="themeToggleIcon">🌙</span>
-        </button>
+      <!-- Right: 4 Primary Engineering Workspace Switchers + Theme Toggle (Sticking to Right) -->
+      <div class="header-right-cluster">
+        <nav class="navbar-workspace-nav" aria-label="Engineering Workspaces">
+          <button class="workspace-nav-btn active" data-workspace="ws-studio" id="btnWsStudio">
+            <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h5l3 8 4-16 3 8h5"/></svg>
+            <div class="ws-btn-text">
+              <span class="ws-btn-title">Design Studio &amp; Visualizer</span>
+              <span class="ws-btn-sub">Simulation &amp; Trial Response</span>
+            </div>
+          </button>
+          <button class="workspace-nav-btn" data-workspace="ws-inputs" id="btnWsInputs">
+            <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <div class="ws-btn-text">
+              <span class="ws-btn-title">Design Parameters</span>
+              <span class="ws-btn-sub">Traffic, Materials &amp; Spectrum</span>
+            </div>
+          </button>
+          <button class="workspace-nav-btn" data-workspace="ws-audit" id="btnWsAudit">
+            <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <div class="ws-btn-text">
+              <span class="ws-btn-title">Fatigue &amp; Structural Audit</span>
+              <span class="ws-btn-sub">BUC / TDC Ledger &amp; Joints</span>
+            </div>
+          </button>
+          <button class="workspace-nav-btn" data-workspace="ws-variants" id="btnWsVariants">
+            <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/></svg>
+            <div class="ws-btn-text">
+              <span class="ws-btn-title">Construction Variants</span>
+              <span class="ws-btn-sub">4-Option Trade-Off Matrix</span>
+            </div>
+          </button>
+        </nav>
 
-        <button id="btnAutoOptimize" class="btn btn-primary"
-          style="background: linear-gradient(135deg, #059669, #047857); border-color: #10b981;"
-          title="Automatically solve for the minimal safe slab thickness">
-          <span>⚡ Auto-Optimize Thickness</span>
-        </button>
-        <button id="btnReset" class="btn btn-secondary" title="Reset all fields to defaults">
-          <span>🔄 Reset</span>
-        </button>
-        <button id="btnPrint" class="btn btn-secondary" title="Print calculation report to PDF">
-          <span>🖨️ Export PDF</span>
-        </button>
-        <button id="btnExportData" class="btn btn-secondary" title="Export complete calculation model as JSON">
-          <span>📥 Save/Export JSON</span>
+        <div class="header-divider"></div>
+
+        <button id="btnThemeToggle" class="btn-icon-action" title="Toggle Light / Dark Mode" aria-label="Toggle Theme">
+          <span id="themeToggleIcon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </span>
         </button>
       </div>
     </header>
 
-    <!-- State & Union Territory Selector Banner (All States of India) -->
-    <section class="state-selector-banner">
-      <div class="state-selector-info">
-        <div class="pin-icon">🇮🇳</div>
-        <div>
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Select Project Location (State &
-            Region of India)</h3>
-          <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 2px;">
-            IRC:58:2015 establishes 7 distinct climatic zones across India. Selecting your state automatically applies
-            the designated climatic zone and temperature differentials.
-          </p>
+    <!-- Geoclimatic Location & Thermal Context Studio (IRC:58:2015 Pan-India) -->
+    <section class="geoclimatic-hub-card">
+      <div class="geo-hub-header">
+        <div class="geo-hub-title-group">
+          <div class="geo-hub-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="geo-hub-headline-row">
+              <h2 class="geo-hub-title">Project Location &amp; IRC:58 Climatic Context</h2>
+              <span class="geo-hub-badge">IRC:58 Table 1</span>
+            </div>
+            <p class="geo-hub-subtitle">
+              Select any Indian State or UT to automatically bind IRC:58 climatic zones, curling temperature differentials, and regional subgrade defaults.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div class="state-selector-controls">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">State /
-            Union Territory</span>
-          <select id="selectIndianState" class="form-select"
-            style="min-width: 240px; font-weight: 600; border-color: var(--accent-cyan);">
-            <!-- Populated dynamically with all 28 States & UTs -->
-          </select>
+      <div class="geo-hub-content-grid">
+        <!-- Column 1: State & Sub-Region Selection + Context Pills -->
+        <div class="geo-picker-column">
+          <div class="geo-field-group">
+            <div class="geo-field-label-row">
+              <label for="selectIndianState" class="geo-field-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                <span>State / Union Territory &amp; Region</span>
+              </label>
+              <span class="geo-field-hint">Searchable selector</span>
+            </div>
+            <div class="geo-select-wrapper">
+              <select id="selectIndianState" class="form-select">
+                <!-- Populated dynamically with all 28 States & UTs -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick Context Telemetry Pills -->
+          <div class="geo-context-pills">
+            <div class="geo-pill" id="geoPillState" title="Selected State / Territory">
+              <span class="geo-pill-label">State:</span>
+              <strong class="geo-pill-val" id="geoStateVal">Bihar</strong>
+            </div>
+            <div class="geo-pill" id="geoPillRegion" title="IRC:58 Sub-Regional Terrain">
+              <span class="geo-pill-label">Region:</span>
+              <strong class="geo-pill-val" id="geoRegionVal">Gangetic Plains</strong>
+            </div>
+            <div class="geo-pill" id="geoPillCbr" title="IRC:58 Recommended Subgrade CBR for this region">
+              <span class="geo-pill-label">Rec. CBR:</span>
+              <strong class="geo-pill-val" id="geoCbrVal">8.0%</strong>
+            </div>
+            <div class="geo-pill" id="geoPillTraffic" title="Baseline Regional Traffic Flow Volume">
+              <span class="geo-pill-label">Base Traffic:</span>
+              <strong class="geo-pill-val" id="geoTrafficVal">3,000 CVPD</strong>
+            </div>
+          </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">IRC:58
-            Climate Zone</span>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span id="badgeStateZone" class="code-tag"
-              style="font-size: 13px; font-weight: 700; padding: 6px 14px;">Zone III</span>
-            <span id="badgeDayTemp"
-              style="font-size: 12px; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 600;">+16.8°C
-              Day / -13.4°C Night</span>
+        <!-- Column 2: Live Climatic & Curling Thermal Gradient Telemetry -->
+        <div class="geo-telemetry-column">
+          <!-- Metric 1: Climatic Zone -->
+          <div class="geo-telemetry-card card-zone">
+            <div class="geo-card-top">
+              <span class="geo-card-label">IRC:58 Climate Zone</span>
+              <span class="geo-card-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </span>
+            </div>
+            <div class="geo-card-value-wrap">
+              <span id="badgeStateZone" class="geo-zone-pill">Zone III</span>
+            </div>
+            <div class="geo-card-foot" id="geoZoneDescription">Gangetic Plains &amp; Eastern Delta</div>
           </div>
+
+          <!-- Metric 2: Daytime Positive Curling Delta T -->
+          <div class="geo-telemetry-card card-day">
+            <div class="geo-card-top">
+              <span class="geo-card-label">Daytime Max Curl (&Delta;T)</span>
+              <span class="geo-card-icon text-amber">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+              </span>
+            </div>
+            <div class="geo-card-value-wrap">
+              <span id="geoDayTempDisplay" class="geo-temp-val text-amber">+16.8&deg;C</span>
+            </div>
+            <div class="geo-card-foot">Bottom-Up Cracking (BUC)</div>
+          </div>
+
+          <!-- Metric 3: Nighttime Negative Curling Delta T -->
+          <div class="geo-telemetry-card card-night">
+            <div class="geo-card-top">
+              <span class="geo-card-label">Nighttime Warping (&Delta;T)</span>
+              <span class="geo-card-icon text-cyan">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+              </span>
+            </div>
+            <div class="geo-card-value-wrap">
+              <span id="geoNightTempDisplay" class="geo-temp-val text-cyan">-13.4&deg;C</span>
+            </div>
+            <div class="geo-card-foot">Top-Down Cracking (TDC)</div>
+          </div>
+
+          <!-- Hidden legacy element for 100% backward-compatibility -->
+          <span id="badgeDayTemp" style="display: none;">+16.8°C Day / -13.4°C Night</span>
         </div>
       </div>
     </section>
-
-    <!-- Executive KPI & Trial Slab Control Dashboard -->
-    <section class="kpi-dashboard">
-      <!-- Hero Trial Thickness Slider -->
-      <div class="kpi-card hero-slider">
-        <div class="kpi-label">
-          <span>Trial Slab Thickness (h)</span>
-          <span class="code-tag">PQC SLAB</span>
-        </div>
-        <div class="slider-control-group">
-          <div class="slider-val-display">
-            <span class="slider-big-val" id="displayThickness">310 mm</span>
-            <span class="kpi-unit" id="kpiFinalThickness">320 mm (+10mm wear)</span>
-          </div>
-          <input type="range" id="sliderThickness" class="custom-range-slider" min="100" max="700" step="0.5"
-            value="310">
-          <div
-            style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-muted); margin-top:4px; font-family:var(--font-mono);">
-            <span>100 mm</span>
-            <span style="color:var(--accent-cyan); font-weight:600;">Real-time Dynamic Recalculation</span>
-            <span>700 mm</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Radius of Relative Stiffness l -->
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>Relative Stiffness</span>
-          <span style="font-family:var(--font-mono); color:var(--accent-cyan);">ℓ</span>
-        </div>
-        <div class="kpi-val">
-          <span id="displayRadiusL">1.084</span>
-          <span class="kpi-unit">m</span>
-        </div>
-        <div class="kpi-subtext">Radius of slab stiffness</div>
-      </div>
-
-      <!-- Effective Subgrade Reaction k_eff -->
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>Effective Subgrade</span>
-          <span style="font-family:var(--font-mono); color:var(--accent-amber);">k<sub>eff</sub></span>
-        </div>
-        <div class="kpi-val">
-          <span id="displayEffectiveK">58.14</span>
-          <span class="kpi-unit">MPa/m</span>
-        </div>
-        <div class="kpi-subtext">Over subbase foundation</div>
-      </div>
-
-      <!-- CFD Bottom-Up Cracking -->
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>Daytime Fatigue</span>
-          <span style="font-family:var(--font-mono); color:#0284c7;">BUC</span>
-        </div>
-        <div class="kpi-val">
-          <span id="displayCfdBuc">0.000</span>
-          <span class="kpi-unit">CFD</span>
-        </div>
-        <div class="kpi-subtext">Bottom-Up Cracking (10 AM - 4 PM)</div>
-      </div>
-
-      <!-- CFD Top-Down Cracking -->
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>Nighttime Fatigue</span>
-          <span style="font-family:var(--font-mono); color:#e11d48;">TDC</span>
-        </div>
-        <div class="kpi-val">
-          <span id="displayCfdTdc">0.999</span>
-          <span class="kpi-unit">CFD</span>
-        </div>
-        <div class="kpi-subtext">Top-Down Cracking (0 AM - 6 AM)</div>
-      </div>
-
-      <!-- Combined Fatigue Damage Safety Card -->
-      <div class="kpi-card safety-card safe" id="safetyCard">
-        <div class="kpi-label">
-          <span>Total Damage (&Sigma; CFD)</span>
-          <span style="font-family:var(--font-mono);">Limit &le; 1.0</span>
-        </div>
-        <div class="kpi-val" style="margin-bottom: 4px;">
-          <span id="displayTotalCfd">0.999</span>
-          <span class="kpi-unit">/ 1.000</span>
-        </div>
-        <div class="safety-status-badge" id="safetyBadge">
-          <span>✓ SAFE</span>
-          <span style="font-size:11px;font-weight:normal;">(CFD &le; 1.0)</span>
-        </div>
-        <div class="cfd-meter-bar">
-          <div class="cfd-meter-fill" id="cfdMeterFill" style="width: 99.9%; background-color: #059669;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Navigation Tabs -->
-    <nav class="tabs-nav">
-      <button class="tab-btn active" data-tab="tabVisualizer">
-        <span>🎨 Slab Curling & Visualizer</span>
-      </button>
-      <button class="tab-btn" data-tab="tabSpreadsheet">
-        <span>📑 Stress & Fatigue Analysis (Spreadsheet)</span>
-      </button>
-      <button class="tab-btn" data-tab="tabCompare">
-        <span>🔄 4 Construction Variants (Slide 58)</span>
-      </button>
-      <button class="tab-btn" data-tab="tabTraffic">
-        <span>📊 Project & Traffic Setup</span>
-      </button>
-      <button class="tab-btn" data-tab="tabSpectrum">
-        <span>🚛 Axle Load Spectrum</span>
-      </button>
-      <button class="tab-btn" data-tab="tabMaterials">
-        <span>🧱 Subgrade & Materials</span>
-      </button>
-      <button class="tab-btn" data-tab="tabJoints">
-        <span>🔩 Dowel & Tie Bar Design</span>
-      </button>
-    </nav>
 
     <!-- ====================================================================
-         TAB 1: SLAB CURLING & CROSS-SECTION VISUALIZER
+         WORKSPACE 1: DESIGN STUDIO & SIMULATION
          ==================================================================== -->
-    <div id="tabVisualizer" class="tab-pane active">
-      <div class="panel-grid">
+    <div id="ws-studio" class="workspace-pane active">
+      <!-- Executive Trial Control & Real-Time Structural Response Pipeline -->
+      <section class="trial-hub-container">
+        <!-- Zone 1: Interactive Trial Slab Controller (Input Driver) -->
+        <div class="trial-controller-card">
+          <div class="trial-card-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <span class="trial-hub-label">Trial Slab Thickness</span>
+            </div>
+            <button id="btnAutoOptimize" class="btn-optimize-chip" title="Automatically solve for minimal safe slab thickness">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Auto-Optimize</span>
+            </button>
+          </div>
+
+          <div class="trial-input-row">
+            <div class="trial-numeric-wrap">
+              <input type="number" id="inputNumericThickness" class="trial-numeric-input" min="100" max="700" step="1" value="310" aria-label="Trial Slab Thickness in mm">
+              <span class="trial-unit-tag">mm</span>
+            </div>
+            <div class="trial-stepper-group">
+              <button type="button" id="btnStepMinus" class="trial-step-btn" title="Decrease Thickness by 5mm">&minus;5</button>
+              <button type="button" id="btnStepPlus" class="trial-step-btn" title="Increase Thickness by 5mm">+5</button>
+            </div>
+          </div>
+
+          <div class="trial-slider-row">
+            <input type="range" id="sliderThickness" class="custom-range-slider" min="100" max="700" step="0.5" value="310" aria-label="Slab Thickness Slider">
+            <div class="trial-slider-labels">
+              <span>100 mm</span>
+              <span id="displayThickness" style="display:none;">310 mm</span>
+              <span>700 mm</span>
+            </div>
+          </div>
+
+          <div class="trial-meta-row">
+            <div class="trial-meta-item">
+              <span class="meta-label">Total Construction:</span>
+              <strong class="meta-val" id="kpiFinalThickness">320 mm (+10mm wear)</strong>
+            </div>
+            <div class="trial-live-badge">
+              <span class="live-indicator-dot"></span>
+              <span>Live Recalculation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 2: Connected Real-Time Structural Response Pipeline (Output Response) -->
+        <div class="trial-pipeline-card">
+          <div class="trial-card-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span class="trial-hub-label">Real-Time Structural Response Pipeline</span>
+            </div>
+            <span class="pipeline-flow-tag">Cause &rarr; Effect Linkage</span>
+          </div>
+
+          <div class="pipeline-grid">
+            <!-- Step 1: Stiffness Node -->
+            <div class="pipeline-node">
+              <div class="node-step">01. Stiffness (l)</div>
+              <div class="node-main-val" id="displayRadiusL">1.084 m</div>
+              <div class="node-sub-val">Radius of Rel. Stiffness</div>
+              <div class="node-badge">k<sub>eff</sub>: <span id="displayEffectiveK">58.14</span> MPa/m</div>
+            </div>
+
+            <div class="pipeline-connector">
+              <svg class="flow-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+
+            <!-- Step 2: Fatigue Damage Node -->
+            <div class="pipeline-node">
+              <div class="node-step">02. Fatigue Damage</div>
+              <div class="node-main-val"><span id="displayCfdTdc">0.306</span> <span class="node-unit">TDC</span></div>
+              <div class="node-sub-val">Top-Down Night Curling</div>
+              <div class="node-badge">BUC Day: <span id="displayCfdBuc">0.000</span></div>
+            </div>
+
+            <div class="pipeline-connector">
+              <svg class="flow-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+
+            <!-- Step 3: Safety Verdict Node -->
+            <div class="pipeline-node node-verdict" id="safetyCard">
+              <div class="node-step">03. IRC:58 Safety</div>
+              <div class="node-main-val"><span id="displayTotalCfd">0.306</span> <span class="node-unit">/ 1.000</span></div>
+              <div class="safety-status-badge" id="safetyBadge">
+                <svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>SAFE DESIGN</span>
+              </div>
+              <div class="node-sub-val" style="margin-top: 5px;">Limit: &Sigma; CFD &le; 1.0</div>
+            </div>
+          </div>
+
+          <!-- Full-Width Live Capacity Gauge -->
+          <div class="pipeline-gauge-wrap">
+            <div class="gauge-meta-row">
+              <span class="gauge-title">IRC:58 Fatigue Life Capacity Utilization</span>
+              <span class="gauge-value" id="gaugePctLabel">30.6% Used</span>
+            </div>
+            <div class="cfd-meter-bar">
+              <div class="cfd-meter-fill" id="cfdMeterFill" style="width: 30.6%; background-color: var(--accent-emerald);"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visualizer Panels -->
+      <div id="tabVisualizer" class="panel-grid">
         <!-- Curling Simulation Canvas -->
         <div class="panel-card">
           <div class="panel-header">
-            <h3><span>🌊</span> Pavement Slab Temperature Curling Simulation</h3>
-            <span class="panel-badge">WINKLER SPRING MODEL</span>
+            <div class="panel-header-title-group">
+              <span class="panel-overline">Mechanistic FE Simulation</span>
+              <h3><svg class="app-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Pavement Slab Temperature Curling Simulation</h3>
+            </div>
+            <button class="card-action-btn" type="button" title="Understand Curling Mechanics">Understand</button>
           </div>
 
           <div class="canvas-wrapper">
@@ -237,8 +325,8 @@
 
           <div class="visualizer-controls">
             <div class="view-mode-toggle">
-              <button id="btnModeDay" class="view-mode-btn active">☀️ Day: Bottom-Up Cracking (BUC)</button>
-              <button id="btnModeNight" class="view-mode-btn">🌙 Night: Top-Down Cracking (TDC)</button>
+              <button id="btnModeDay" class="view-mode-btn active"><svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg> Day: Bottom-Up Cracking (BUC)</button>
+              <button id="btnModeNight" class="view-mode-btn"><svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg> Night: Top-Down Cracking (TDC)</button>
             </div>
 
             <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-secondary);">
@@ -248,13 +336,13 @@
             </div>
           </div>
 
-          <div class="alert-box info" style="margin-top:16px; margin-bottom:0;">
+          <div class="alert-box alert-yellow" style="margin-top:16px; margin-bottom:0;">
+            <div style="font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+              <svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              <span>IRC:58 Mechanistic Curling Principle</span>
+            </div>
             <div>
-              <strong>Engineering Principle:</strong> In daytime, solar radiation creates a positive temperature
-              gradient (top hotter than bottom) causing downward convex curl and peak tensile stresses at the slab
-              bottom midway along the longitudinal edge. At nighttime, the slab curls upward (concave), losing contact
-              at corners and joints; wheel loads applied near transverse joints produce critical tensile stresses at the
-              top surface.
+              In daytime, solar radiation creates a positive temperature gradient (top hotter than bottom) causing downward convex curl and peak tensile stresses at the slab bottom midway along the longitudinal edge. At nighttime, the slab curls upward (concave), losing contact at corners and joints; wheel loads applied near transverse joints produce critical tensile stresses at the top surface.
             </div>
           </div>
         </div>
@@ -262,8 +350,11 @@
         <!-- Scaled Cross-Section Schematic -->
         <div class="panel-card">
           <div class="panel-header">
-            <h3><span>📐</span> Dynamic Pavement Layer Cross-Section</h3>
-            <span class="panel-badge">IRC:58 STRUCTURAL LAYERS</span>
+            <div class="panel-header-title-group">
+              <span class="panel-overline">Structural Composition</span>
+              <h3><svg class="app-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.3 8.7-12.6 12.6c-1 1-2.5 1-3.4 0l-2.6-2.6c-1-1-1-2.5 0-3.4L15.3 2.7c1-1 2.5-1 3.4 0l2.6 2.6c1 1 1 2.5 0 3.4Z"/></svg> Dynamic Pavement Layer Cross-Section</h3>
+            </div>
+            <button class="card-action-btn" type="button" title="Understand Layer Stacking">Understand</button>
           </div>
 
           <div class="cross-section-container" id="crossSectionSvgContainer"
@@ -273,22 +364,19 @@
 
           <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:16px;">
             <div
-              style="background:var(--bg-secondary); padding:10px 14px; border-radius:8px; border:1px solid var(--border-subtle);">
-              <div style="font-size:11px; color:var(--text-muted);">PQC SLAB</div>
-              <div style="font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--accent-cyan);">M40
-                Concrete</div>
+              style="background:var(--bg-card-secondary); padding:12px 16px; border-radius:12px; border:1px solid var(--border-light);">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">PQC SLAB</div>
+              <div style="font-family:var(--font-heading); font-size:15px; font-weight:700; color:var(--accent-blue);">M40 Concrete</div>
             </div>
             <div
-              style="background:var(--bg-secondary); padding:10px 14px; border-radius:8px; border:1px solid var(--border-subtle);">
-              <div style="font-size:11px; color:var(--text-muted);">SEPARATION LAYER</div>
-              <div style="font-family:var(--font-mono); font-size:14px; font-weight:700; color:#ec4899;">125 µm
-                Polythene</div>
+              style="background:var(--bg-card-secondary); padding:12px 16px; border-radius:12px; border:1px solid var(--border-light);">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">SEPARATION LAYER</div>
+              <div style="font-family:var(--font-heading); font-size:15px; font-weight:700; color:#ec4899;">125 µm Polythene</div>
             </div>
             <div
-              style="background:var(--bg-secondary); padding:10px 14px; border-radius:8px; border:1px solid var(--border-subtle);">
-              <div style="font-size:11px; color:var(--text-muted);">SUBBASE DRAINAGE</div>
-              <div style="font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--accent-amber);">150
-                mm GSB</div>
+              style="background:var(--bg-card-secondary); padding:12px 16px; border-radius:12px; border:1px solid var(--border-light);">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">SUBBASE DRAINAGE</div>
+              <div style="font-family:var(--font-heading); font-size:15px; font-weight:700; color:var(--accent-amber);">150 mm GSB</div>
             </div>
           </div>
         </div>
@@ -296,130 +384,640 @@
     </div>
 
     <!-- ====================================================================
-         TAB 2: SPREADSHEET AUDIT VIEW (MATCHING EXCEL EXACTLY)
+         WORKSPACE 2: DESIGN PARAMETERS (TRAFFIC, MATERIALS, SPECTRUM)
          ==================================================================== -->
-    <div id="tabSpreadsheet" class="tab-pane">
-      <div id="totalCfdSummaryContainer" style="margin-bottom: 24px;"></div>
-
-      <!-- Bottom-Up Cracking (BUC) Table -->
-      <div class="panel-card" style="margin-bottom:24px;">
-        <div class="panel-header">
-          <h3><span>☀️</span> Cumulative Fatigue Damage Analysis for Bottom-Up Cracking (BUC) — Daytime (10 AM - 4 PM)
-          </h3>
-          <span class="panel-badge" id="badgeBucTemp">POSITIVE TEMP DIFF: &Delta;T = 16.8°C</span>
+    <div id="ws-inputs" class="workspace-pane">
+      <div class="subnav-container">
+        <div class="subnav-pills">
+          <button class="subnav-btn active" data-subtab="subtab-traffic">
+            <svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <span>Highway Geometry &amp; Traffic</span>
+          </button>
+          <button class="subnav-btn" data-subtab="subtab-materials">
+            <svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <span>Subgrade &amp; Concrete Materials</span>
+          </button>
+          <button class="subnav-btn" data-subtab="subtab-spectrum">
+            <svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-4v10Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            <span>Axle Load Spectrum Distribution</span>
+          </button>
         </div>
 
-        <div class="panel-grid" style="margin-bottom: 0;">
-          <!-- Single Axle Table -->
-          <div>
-            <h4 style="font-size:14px; color:var(--accent-cyan); margin-bottom:10px;">Rear Single Axles</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Axle Load (kN)</th>
-                    <th>Freq (%)</th>
-                    <th>Expected Rep (n<sub>i</sub>)</th>
-                    <th>Flex Stress (MPa)</th>
-                    <th>Stress Ratio (SR)</th>
-                    <th>Allowable Rep (N<sub>i</sub>)</th>
-                    <th>Fatigue Damage</th>
-                  </tr>
-                </thead>
-                <tbody id="tableBucSingleBody"></tbody>
-              </table>
+        <div class="subnav-actions">
+          <button type="button" class="btn-subnav-action" id="btnReset" title="Reset all parameters to IRC:58 benchmark defaults">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+            <span>Reset Defaults</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtab A: Highway Geometry & Traffic Setup -->
+      <div id="subtab-traffic" class="subtab-pane active">
+        <!-- Traffic Calculation Engine Mode Selector -->
+        <div
+          style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px; padding:16px 22px; border-radius:var(--radius-lg); background:var(--bg-card); border:1px solid var(--border-light); box-shadow:var(--shadow-card);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <svg class="app-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            <div>
+              <div style="font-weight:700; font-size:14.5px; color:var(--text-primary);">Traffic Calculation Engine Mode</div>
+              <div style="font-size:12px; color:var(--text-secondary);">Direct calculation from user-entered traffic counts &amp; geometry per IRC:58:2015 Clause 4</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button type="button" id="btnModeUserInput" class="btn btn-primary"
+              style="padding:6px 14px; font-size:12.5px;"><svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> User-Entered Traffic Data (Active)</button>
+            <button type="button" id="btnModeBenchmark" class="btn btn-secondary"
+              style="padding:6px 14px; font-size:12.5px;"><svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg> IRC:58 Benchmark Fixed Dataset</button>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <!-- Panel 1: Highway Project, Lane Configuration & Geometry -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span> Highway Project &amp; Road Geometry</h3>
+              <span class="panel-badge">LANES &amp; DIMENSIONS</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group span-2">
+                <label class="form-label" for="inputProjectName">Project Description / Highway Name</label>
+                <input type="text" id="inputProjectName" class="form-input"
+                  value="National Highway Rigid Pavement Project">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectNumLanes">Number of Lanes</label>
+                <select id="selectNumLanes" class="form-select">
+                  <option value="2">2 Lanes (Single / Dual)</option>
+                  <option value="4" selected>4 Lanes (2 lanes each direction)</option>
+                  <option value="6">6 Lanes (3 lanes each direction)</option>
+                  <option value="8">8 Lanes (4 lanes each direction)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectCarriageway">Carriageway Configuration</label>
+                <select id="selectCarriageway" class="form-select">
+                  <option value="divided" selected>Divided Carriageway (with Median)</option>
+                  <option value="undivided">Undivided Carriageway (Single Roadway)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputLaneWidth">Design Lane Width</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputLaneWidth" class="form-input" value="3.5" step="0.05" min="3.0" max="4.5">
+                  <span class="input-unit-tag">m</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Standard IRC lane width: 3.50 m (or 3.75 m)</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputJointSpacing">Transverse Joint Spacing (Slab Length)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputJointSpacing" class="form-input" value="4.5" step="0.1" min="3.5" max="6.0">
+                  <span class="input-unit-tag">m</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Spacing between transverse contraction joints</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputDesignPeriod">Design Period (n)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputDesignPeriod" class="form-input" value="30" min="10" max="50">
+                  <span class="input-unit-tag">Years</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">IRC:58 recommends 30 years for National/State Highways</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputDesignLanePct">Design Lane Distribution Factor (D)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputDesignLanePct" class="form-input" value="25" step="1" min="10" max="60">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;" id="labelDesignLanePreset">IRC:58 Table 4.1: 25% for 4-lane divided</div>
+              </div>
             </div>
           </div>
 
-          <!-- Tandem Axle Table -->
-          <div>
-            <h4 style="font-size:14px; color:var(--accent-amber); margin-bottom:10px;">Rear Tandem Axles</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Axle Load (kN)</th>
-                    <th>Freq (%)</th>
-                    <th>Expected Rep (n<sub>i</sub>)</th>
-                    <th>Flex Stress (MPa)</th>
-                    <th>Stress Ratio (SR)</th>
-                    <th>Allowable Rep (N<sub>i</sub>)</th>
-                    <th>Fatigue Damage</th>
-                  </tr>
-                </thead>
-                <tbody id="tableBucTandemBody"></tbody>
-              </table>
+          <!-- Panel 2: Directional Traffic Volumes -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-4v10Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span> Traffic Crossing in Each Direction</h3>
+              <span class="panel-badge">DIRECTIONAL VOLUME</span>
+            </div>
+
+            <div class="alert-box info" style="margin-bottom:16px;">
+              <div>
+                Enter the commercial traffic count <strong>crossing in each and every direction</strong>. The heavier direction is automatically selected for rigid pavement design.
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="inputCvpdDir1">Direction 1 Traffic (Direction A / Northbound)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputCvpdDir1" class="form-input" value="3000" min="50" max="50000" step="50">
+                  <span class="input-unit-tag">CVPD</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Commercial vehicles / day in Dir 1</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputCvpdDir2">Direction 2 Traffic (Direction B / Southbound)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputCvpdDir2" class="form-input" value="3000" min="50" max="50000" step="50">
+                  <span class="input-unit-tag">CVPD</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Commercial vehicles / day in Dir 2</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputGrowthRate">Annual Traffic Growth Rate (r)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputGrowthRate" class="form-input" value="5.0" step="0.1" min="1" max="15">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Compound annual growth rate (default 5.0%)</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputPredominantDirPct">Predominant Direction Split Factor</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputPredominantDirPct" class="form-input" value="50" step="0.5" min="40" max="75">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">% of total traffic in heavier direction</div>
+              </div>
+            </div>
+
+            <!-- Live Directional Calculation Metrics -->
+            <div
+              style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; padding:12px 16px; border-radius:var(--radius-md); background:var(--bg-secondary); border:1px solid var(--border-subtle);">
+              <div>
+                <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Total 24-Hour Two-Way Traffic</div>
+                <div style="font-size:18px; font-weight:700; color:var(--accent-cyan);" id="displayTotal2WayCvpd">6,000 CVPD</div>
+              </div>
+              <div>
+                <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Predominant Direction Traffic</div>
+                <div style="font-size:18px; font-weight:700; color:var(--accent-emerald);" id="displayPredominantCvpd">3,000 CVPD</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 3: 24-Hour & 12-to-12 Hour Day/Night Traffic with 6-Hour Critical Fatigue Windows -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> 24h &amp; 12h-to-12h Traffic (6h Day &amp; 6h Night Peaks)</h3>
+              <span class="panel-badge">BUC: 6h DAY &bull; TDC: 6h NIGHT</span>
+            </div>
+
+            <div class="alert-box info" style="margin-bottom:16px;">
+              <div>
+                <strong>IRC:58 Fatigue Distribution:</strong> 24-hour traffic is split into <strong>12-Hour Day (6 AM – 6 PM)</strong> and <strong>12-Hour Night (6 PM – 6 AM)</strong>.
+                Fatigue is calculated for the <strong>critical 6-hour windows</strong>:
+                <ul style="margin:6px 0 0 16px; padding:0;">
+                  <li><strong>Daytime Peak 6 Hours (10 AM – 4 PM):</strong> Bottom-Up Cracking (BUC) under maximum positive temperature curling (+ΔT).</li>
+                  <li><strong>Nighttime Peak 6 Hours (0 AM – 6 AM):</strong> Top-Down Cracking (TDC) under maximum negative temperature curling (-ΔT).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="inputNightTrafficPct">Nighttime 12-Hour Traffic (6 PM – 6 AM)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputNightTrafficPct" class="form-input" value="60" min="10" max="90" step="1">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
+                  Passing in 12h Night: <strong id="displayNight12hCount" style="color:var(--text-primary);">1,800 CVPD</strong>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Daytime 12-Hour Traffic (6 AM – 6 PM)</label>
+                <div class="input-with-unit">
+                  <input type="text" id="displayDayTrafficPct" class="form-input" value="40%" disabled
+                    style="background:var(--bg-secondary); cursor:not-allowed;">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
+                  Passing in 12h Day: <strong id="displayDay12hCount" style="color:var(--text-primary);">1,200 CVPD</strong>
+                </div>
+              </div>
+
+              <div class="form-group" style="display:flex; flex-direction:column;">
+                <label class="form-label" for="inputPeak6hDayPct">Peak 6-Hour Daytime Window (10 AM – 4 PM) [BUC]</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputPeak6hDayPct" class="form-input" value="50" step="1" min="20" max="80">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
+                  Passing in 6h Day: <strong id="displayDay6hCount" style="color:var(--accent-amber);">600 CVPD</strong>
+                </div>
+              </div>
+
+              <div class="form-group" style="display:flex; flex-direction:column;">
+                <label class="form-label" for="inputPeak6hNightPct">Peak 6-Hour Nighttime Window (0 AM – 6 AM) [TDC]</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputPeak6hNightPct" class="form-input" value="50" step="1" min="20" max="80">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
+                  Passing in 6h Night: <strong id="displayNight6hCount" style="color:var(--accent-cyan);">900 CVPD</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 4: Vehicle Type Percentages & Axle Proportions -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-4v10Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span> Vehicle Type % &amp; Axle Proportions</h3>
+              <span class="panel-badge">FLEET COMPOSITION</span>
+            </div>
+
+            <div style="margin-bottom:12px; font-size:12.5px; font-weight:600; color:var(--text-primary);">
+              A. Commercial Vehicle Fleet Type Proportions (% of Vehicles)
+            </div>
+            <div class="form-grid" style="margin-bottom:12px;">
+              <div class="form-group">
+                <label class="form-label" for="inputPct2Axle">2-Axle Trucks / Buses (LCV / 2-Axle HCV)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputPct2Axle" class="form-input" value="45" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputPct3Axle">3-Axle Multi-Axle Trucks (MAV - Tandem)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputPct3Axle" class="form-input" value="35" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputPctMultiAxle">4 to 6+ Axle Semi-Trailers / Articulated</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputPctMultiAxle" class="form-input" value="20" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputAxlesPerCv">Average Axles per Commercial Vehicle</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputAxlesPerCv" class="form-input" value="2.35" step="0.01" min="2.0" max="5.0">
+                  <span class="input-unit-tag">axles/CV</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:var(--radius-sm); background:var(--bg-secondary); margin-bottom:16px; font-size:12px;">
+              <span>Vehicle Type Fleet Total:</span>
+              <strong id="fleetPctTotal" style="color:var(--accent-emerald); font-size:13px;">100%</strong>
+            </div>
+
+            <div style="margin-bottom:12px; font-size:12.5px; font-weight:600; color:var(--text-primary);">
+              B. Axle Category Distribution (% of Total Axles in Stream)
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="inputFrontSinglePct">Front Single (Steering)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputFrontSinglePct" class="form-input" value="45" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputRearSinglePct">Rear Single Axles</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputRearSinglePct" class="form-input" value="15" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputRearTandemPct">Rear Tandem Axles</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputRearTandemPct" class="form-input" value="25" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputRearTridemPct">Rear Tridem Axles</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputRearTridemPct" class="form-input" value="15" step="0.5" min="0" max="100">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:var(--radius-sm); background:var(--bg-secondary); margin-top:10px; font-size:12px;">
+              <span>Axle Category Total:</span>
+              <div>
+                <strong id="axlePctTotal" style="color:var(--accent-emerald); font-size:13px;">100%</strong>
+                <span id="axlePctWarning"
+                  style="color:var(--accent-rose); font-weight:600; margin-left:8px; display:none;"><svg class="app-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Must sum to 100%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 5: Distance of Vehicle & Joint Spacing Comparison -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 9.5-2 2"/><path d="m11.5 6.5-2 2"/><path d="m8.5 3.5-2 2"/><path d="m17.5 12.5-2 2"/></svg></span> Distance of Vehicle &amp; Joint Spacing Filter</h3>
+              <span class="panel-badge">WHEELBASE vs JOINT SPACING</span>
+            </div>
+
+            <div class="alert-box info" style="margin-bottom:16px;">
+              <div>
+                <strong>Top-Down Cracking (TDC) Mechanics:</strong> When the <em>distance of vehicle (wheelbase)</em> is less than or equal to the <em>transverse joint spacing (slab length)</em>, both front steering and rear drive axles simultaneously load the single slab panel during nighttime curl, generating the peak tensile stress at the top surface.
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="inputVehicleDistance">Average Distance of Vehicle (Wheelbase)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputVehicleDistance" class="form-input" value="4.2" step="0.1" min="2.5" max="8.0">
+                  <span class="input-unit-tag">m</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Spacing between front axle and rear axle/tandem</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Transverse Joint Spacing (Slab Length)</label>
+                <div class="input-with-unit">
+                  <input type="text" id="displayJointSpacingCompare" class="form-input" value="4.5 m" disabled
+                    style="background:var(--bg-secondary); cursor:not-allowed;">
+                  <span class="input-unit-tag">m</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Defined in Road Geometry panel</div>
+              </div>
+
+              <div class="form-group span-2">
+                <label class="form-label" for="inputWheelbasePct">% Vehicles with Wheelbase &le; Joint Spacing</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputWheelbasePct" class="form-input" value="55" min="10" max="95" step="1">
+                  <span class="input-unit-tag">%</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Only this fraction of commercial vehicles causes critical TDC at contraction joints</div>
+              </div>
+            </div>
+
+            <div id="badgeWheelbaseStatus"
+              style="margin-top:14px; padding:10px 14px; border-radius:8px; background:rgba(2,132,199,0.08); border:1.5px dotted rgba(2,132,199,0.45); font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
+              <span><svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+              <span>Vehicle wheelbase (<strong>4.2 m</strong>) &le; joint spacing (<strong>4.5 m</strong>) &rarr; critical for Top-Down Cracking.</span>
+            </div>
+          </div>
+
+          <!-- Panel 6: Shoulder & Joint Structural Conditions -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20"/><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M6 12h12"/><path d="M6 8h12"/><path d="M6 16h12"/></svg></span> Shoulder &amp; Joint Structural Conditions</h3>
+              <span class="panel-badge">IRC:58 CLAUSE 6</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="selectShoulderType">Shoulder Support Condition</label>
+                <select id="selectShoulderType" class="form-select">
+                  <option value="tied" selected>Tied Concrete Shoulder (Reduces Edge Stress)</option>
+                  <option value="untied">Without Concrete Shoulder</option>
+                  <option value="widened">Widened Outer Lane (+0.6m Monolithic Action)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectTransverseJoint">Transverse Joint Type</label>
+                <select id="selectTransverseJoint" class="form-select">
+                  <option value="doweled" selected>Doweled Contraction Joint (β = 0.66, 50% LTE)</option>
+                  <option value="undoweled">Undoweled Joint (β = 0.90, 10% LTE)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Traffic Calculation Summary -->
+        <div id="trafficSummaryContainer" style="margin-top: 24px;"></div>
+      </div>
+
+      <!-- Subtab B: Subgrade & Materials -->
+      <div id="subtab-materials" class="subtab-pane">
+        <div class="panel-grid">
+          <!-- Subgrade & Subbase -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span> Subgrade Reaction &amp; Subbase Foundation</h3>
+              <span class="panel-badge">IRC:58 TABLES 2 &amp; 3</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="inputCbr">Effective Compacted Subgrade CBR</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputCbr" class="form-input" value="8.0" step="0.5" min="2" max="50">
+                  <span class="input-unit-tag">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectSubbaseType">Subbase Type</label>
+                <select id="selectSubbaseType" class="form-select">
+                  <option value="gsb" selected>Granular Subbase (GSB)</option>
+                  <option value="dlc">Dry Lean Concrete (DLC)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputSubbaseThickness">Subbase Thickness</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputSubbaseThickness" class="form-input" value="150" step="25" min="100" max="300">
+                  <span class="input-unit-tag">mm</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectZone">Climatic Zone (Temperature Diff)</label>
+                <select id="selectZone" class="form-select">
+                  <option value="I">Zone I: Hilly (J&K, Ladakh, HP, Uttarakhand, Sikkim)</option>
+                  <option value="II">Zone II: Punjab, UP, Gujarat, Rajasthan, Haryana, Delhi</option>
+                  <option value="III" selected>Zone III: Bihar, Jharkhand, WB, Assam, Eastern Odisha</option>
+                  <option value="IV">Zone IV: Maharashtra, Karnataka, AP, Telangana, MP, TN</option>
+                  <option value="V">Zone V: Kerala and South Tamil Nadu</option>
+                  <option value="VI">Zone VI: Coastal bounded by hills (Konkan, Goa)</option>
+                  <option value="VII">Zone VII: Coastal unbounded by hills</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Concrete Properties -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Pavement Quality Concrete (PQC) Properties</h3>
+              <span class="panel-badge">IS:456 &amp; IRC:58</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="selectConcreteGrade">Concrete Grade</label>
+                <select id="selectConcreteGrade" class="form-select">
+                  <option value="M35">M35 (fck = 35 MPa)</option>
+                  <option value="M40" selected>M40 (fck = 40 MPa)</option>
+                  <option value="M45">M45 (fck = 45 MPa)</option>
+                  <option value="M50">M50 (fck = 50 MPa)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputFck28">28-day Compressive Strength (f<sub>ck</sub>)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputFck28" class="form-input" value="40" step="1" min="30" max="60">
+                  <span class="input-unit-tag">MPa</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputDesignFlexural">Design Flexural Strength (f<sub>cr</sub>)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="inputDesignFlexural" class="form-input" value="4.87" step="0.01" min="3.5" max="6.5">
+                  <span class="input-unit-tag">MPa</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Elastic Modulus E</label>
+                <div class="input-with-unit">
+                  <input type="text" class="form-input" value="31,623" disabled>
+                  <span class="input-unit-tag">MPa</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Top-Down Cracking (TDC) Table -->
-      <div class="panel-card">
-        <div class="panel-header">
-          <h3><span>🌙</span> Cumulative Fatigue Damage Analysis for Top-Down Cracking (TDC) — Nighttime (0 AM - 6 AM)
-          </h3>
-          <span class="panel-badge" id="badgeTdcTemp">EFFECTIVE NEGATIVE &Delta;T = 13.4°C (INCL. 5°C PERM CURL)</span>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
-          <!-- TDC Rear Single -->
-          <div>
-            <h4 style="font-size:13.5px; color:var(--accent-cyan); margin-bottom:10px;">Rear Single (100% Load)</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Axle (kN)</th>
-                    <th>Expected (n<sub>i</sub>)</th>
-                    <th>Stress (MPa)</th>
-                    <th>SR</th>
-                    <th>Allowable (N<sub>i</sub>)</th>
-                    <th>Damage</th>
-                  </tr>
-                </thead>
-                <tbody id="tableTdcSingleBody"></tbody>
-              </table>
-            </div>
+      <!-- Subtab C: Axle Load Spectrum -->
+      <div id="subtab-spectrum" class="subtab-pane">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-4v10Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span> Axle Load Spectrum Distribution (IRC:58:2015 48-Hour Weighing Survey)</h3>
+            <span class="panel-badge">12 LOAD INTERVALS PER AXLE TYPE</span>
           </div>
 
-          <!-- TDC Rear Tandem -->
-          <div>
-            <h4 style="font-size:13.5px; color:var(--accent-amber); margin-bottom:10px;">Rear Tandem (50% Load)</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Axle (kN)</th>
-                    <th>Expected (n<sub>i</sub>)</th>
-                    <th>Stress (MPa)</th>
-                    <th>SR</th>
-                    <th>Allowable (N<sub>i</sub>)</th>
-                    <th>Damage</th>
-                  </tr>
-                </thead>
-                <tbody id="tableTdcTandemBody"></tbody>
-              </table>
+          <div class="spectrum-tables-grid">
+            <!-- Single Axle Spectrum -->
+            <div>
+              <h4 style="color:var(--accent-cyan); font-size:14px; margin-bottom:8px;">Single Axles (100% = 15% Rear)</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Class (kN)</th>
+                      <th>Mean (kN)</th>
+                      <th>Frequency (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>185-195</td><td>190</td><td>18.15%</td></tr>
+                    <tr><td>175-185</td><td>180</td><td>17.43%</td></tr>
+                    <tr><td>165-175</td><td>170</td><td>18.27%</td></tr>
+                    <tr><td>155-165</td><td>160</td><td>12.98%</td></tr>
+                    <tr><td>145-155</td><td>150</td><td>2.98%</td></tr>
+                    <tr><td>135-145</td><td>140</td><td>1.62%</td></tr>
+                    <tr><td>125-135</td><td>130</td><td>2.62%</td></tr>
+                    <tr><td>115-125</td><td>120</td><td>2.65%</td></tr>
+                    <tr><td>105-115</td><td>110</td><td>2.65%</td></tr>
+                    <tr><td>95-105</td><td>100</td><td>3.25%</td></tr>
+                    <tr><td>85-95</td><td>90</td><td>3.25%</td></tr>
+                    <tr><td>&lt; 85</td><td>85</td><td>14.15%</td></tr>
+                    <tr class="table-summary-row">
+                      <td colspan="2">TOTAL</td>
+                      <td>100.00%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
 
-          <!-- TDC Rear Tridem -->
-          <div>
-            <h4 style="font-size:13.5px; color:#e11d48; margin-bottom:10px;">Rear Tridem (33% Load)</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Axle (kN)</th>
-                    <th>Expected (n<sub>i</sub>)</th>
-                    <th>Stress (MPa)</th>
-                    <th>SR</th>
-                    <th>Allowable (N<sub>i</sub>)</th>
-                    <th>Damage</th>
-                  </tr>
-                </thead>
-                <tbody id="tableTdcTridemBody"></tbody>
-              </table>
+            <!-- Tandem Axle Spectrum -->
+            <div>
+              <h4 style="color:var(--accent-amber); font-size:14px; margin-bottom:8px;">Tandem Axles (100% = 25% Rear)</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Class (kN)</th>
+                      <th>Mean (kN)</th>
+                      <th>Frequency (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>380-400</td><td>390</td><td>14.50%</td></tr>
+                    <tr><td>360-380</td><td>370</td><td>10.50%</td></tr>
+                    <tr><td>340-360</td><td>350</td><td>3.63%</td></tr>
+                    <tr><td>320-340</td><td>330</td><td>2.50%</td></tr>
+                    <tr><td>300-320</td><td>310</td><td>2.69%</td></tr>
+                    <tr><td>280-300</td><td>290</td><td>1.26%</td></tr>
+                    <tr><td>260-280</td><td>270</td><td>3.90%</td></tr>
+                    <tr><td>240-260</td><td>250</td><td>5.19%</td></tr>
+                    <tr><td>220-240</td><td>230</td><td>6.30%</td></tr>
+                    <tr><td>200-220</td><td>210</td><td>6.40%</td></tr>
+                    <tr><td>180-200</td><td>190</td><td>8.90%</td></tr>
+                    <tr><td>&lt; 180</td><td>180</td><td>34.23%</td></tr>
+                    <tr class="table-summary-row">
+                      <td colspan="2">TOTAL</td>
+                      <td>100.00%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tridem Axle Spectrum -->
+            <div>
+              <h4 style="color:#e11d48; font-size:14px; margin-bottom:8px;">Tridem Axles (100% = 15% Rear)</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Class (kN)</th>
+                      <th>Mean (kN)</th>
+                      <th>Frequency (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>530-560</td><td>545</td><td>5.23%</td></tr>
+                    <tr><td>500-530</td><td>515</td><td>4.85%</td></tr>
+                    <tr><td>470-500</td><td>485</td><td>3.44%</td></tr>
+                    <tr><td>440-470</td><td>455</td><td>7.12%</td></tr>
+                    <tr><td>410-440</td><td>425</td><td>10.11%</td></tr>
+                    <tr><td>380-410</td><td>395</td><td>12.01%</td></tr>
+                    <tr><td>350-380</td><td>365</td><td>15.57%</td></tr>
+                    <tr><td>320-350</td><td>335</td><td>13.28%</td></tr>
+                    <tr><td>290-320</td><td>305</td><td>4.55%</td></tr>
+                    <tr><td>260-290</td><td>275</td><td>3.16%</td></tr>
+                    <tr><td>230-260</td><td>245</td><td>3.10%</td></tr>
+                    <tr><td>&lt; 230</td><td>230</td><td>17.58%</td></tr>
+                    <tr class="table-summary-row">
+                      <td colspan="2">TOTAL</td>
+                      <td>100.00%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -427,19 +1025,254 @@
     </div>
 
     <!-- ====================================================================
-         TAB 3: 4 CONSTRUCTION VARIANTS COMPARISON (SLIDE 58)
+         WORKSPACE 3: FATIGUE & STRUCTURAL AUDIT
          ==================================================================== -->
-    <div id="tabCompare" class="tab-pane">
-      <div class="panel-card">
+    <div id="ws-audit" class="workspace-pane">
+      <!-- Total CFD Summary Container -->
+      <div id="totalCfdSummaryContainer" style="margin-bottom: 20px;"></div>
+
+      <div class="subnav-container">
+        <div class="subnav-pills">
+          <button class="subnav-btn active" data-subtab="subtab-fatigue">
+            <svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Cumulative Fatigue Damage Tables (BUC &amp; TDC)</span>
+          </button>
+          <button class="subnav-btn" data-subtab="subtab-joints">
+            <svg class="app-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Dowel &amp; Tie Bar Reinforcement Design</span>
+          </button>
+        </div>
+
+        <div class="audit-action-toolbar">
+          <button type="button" id="btnPrint" class="btn-audit-action btn-audit-primary" title="Export Certified PDF Calculation Sheet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            <span>Export PDF Report</span>
+          </button>
+          <button type="button" id="btnExportData" class="btn-audit-action btn-audit-secondary" title="Save Complete Model as JSON">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Save JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtab A: Fatigue Tables (BUC & TDC) -->
+      <div id="subtab-fatigue" class="subtab-pane active">
+        <!-- Bottom-Up Cracking (BUC) Table -->
+        <div class="panel-card" style="margin-bottom:24px;">
+          <div class="panel-header">
+            <div class="panel-header-title-group">
+              <span class="panel-overline">Mechanistic Fatigue Damage Audit</span>
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span> Cumulative Fatigue Damage Analysis for Bottom-Up Cracking (BUC) — Daytime (10 AM - 4 PM)</h3>
+            </div>
+            <span class="panel-badge" id="badgeBucTemp">POSITIVE TEMP DIFF: &Delta;T = 16.8°C</span>
+          </div>
+
+          <div class="audit-tables-grid-2">
+            <!-- Single Axle Table -->
+            <div>
+              <h4 style="font-size:14px; color:var(--accent-cyan); margin-bottom:10px;">Rear Single Axles</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Axle Load (kN)</th>
+                      <th>Freq (%)</th>
+                      <th>Expected Rep (n<sub>i</sub>)</th>
+                      <th>Flex Stress (MPa)</th>
+                      <th>Stress Ratio (SR)</th>
+                      <th>Allowable Rep (N<sub>i</sub>)</th>
+                      <th>Fatigue Damage</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBucSingleBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tandem Axle Table -->
+            <div>
+              <h4 style="font-size:14px; color:var(--accent-amber); margin-bottom:10px;">Rear Tandem Axles</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Axle Load (kN)</th>
+                      <th>Freq (%)</th>
+                      <th>Expected Rep (n<sub>i</sub>)</th>
+                      <th>Flex Stress (MPa)</th>
+                      <th>Stress Ratio (SR)</th>
+                      <th>Allowable Rep (N<sub>i</sub>)</th>
+                      <th>Fatigue Damage</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBucTandemBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top-Down Cracking (TDC) Table -->
+        <div class="panel-card" style="margin-bottom:24px;">
+          <div class="panel-header">
+            <div class="panel-header-title-group">
+              <span class="panel-overline">Nighttime Negative Thermal Gradient</span>
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span> Cumulative Fatigue Damage Analysis for Top-Down Cracking (TDC) — Nighttime (0 AM - 6 AM)</h3>
+            </div>
+            <span class="panel-badge" id="badgeTdcTemp">NEGATIVE TEMP DIFF: &Delta;T = -13.4°C</span>
+          </div>
+
+          <div class="audit-tables-grid-3">
+            <!-- TDC Rear Single -->
+            <div>
+              <h4 style="font-size:13.5px; color:var(--accent-cyan); margin-bottom:10px;">Rear Single (100% Load)</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Axle (kN)</th>
+                      <th>Expected (n<sub>i</sub>)</th>
+                      <th>Stress (MPa)</th>
+                      <th>SR</th>
+                      <th>Allowable (N<sub>i</sub>)</th>
+                      <th>Damage</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableTdcSingleBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- TDC Rear Tandem -->
+            <div>
+              <h4 style="font-size:13.5px; color:var(--accent-amber); margin-bottom:10px;">Rear Tandem (50% Load)</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Axle (kN)</th>
+                      <th>Expected (n<sub>i</sub>)</th>
+                      <th>Stress (MPa)</th>
+                      <th>SR</th>
+                      <th>Allowable (N<sub>i</sub>)</th>
+                      <th>Damage</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableTdcTandemBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- TDC Rear Tridem -->
+            <div>
+              <h4 style="font-size:13.5px; color:#e11d48; margin-bottom:10px;">Rear Tridem (33% Load)</h4>
+              <div class="table-responsive">
+                <table class="audit-table">
+                  <thead>
+                    <tr>
+                      <th>Axle (kN)</th>
+                      <th>Expected (n<sub>i</sub>)</th>
+                      <th>Stress (MPa)</th>
+                      <th>SR</th>
+                      <th>Allowable (N<sub>i</sub>)</th>
+                      <th>Damage</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableTdcTridemBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subtab B: Dowel & Tie Bar Design -->
+      <div id="subtab-joints" class="subtab-pane">
+        <div class="panel-grid">
+          <!-- Dowel Bars Table -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Transverse Contraction &amp; Expansion Joint Dowel Bars</h3>
+              <span class="panel-badge">IRC:58 TABLE 6</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="audit-table">
+                <thead>
+                  <tr>
+                    <th>Joint Location</th>
+                    <th>Diameter</th>
+                    <th>Length</th>
+                    <th>Spacing</th>
+                    <th>Joint Width</th>
+                    <th>IRC:58 Check</th>
+                  </tr>
+                </thead>
+                <tbody id="tableDowelBody"></tbody>
+              </table>
+            </div>
+
+            <div class="alert-box info" style="margin-top:12px; margin-bottom:0;">
+              <div>
+                <strong>Design Criteria:</strong> Dowel bars are recommended for traffic &gt; 450 CVPD to prevent faulting across contraction joints. Load transfer efficiency of 50% is achieved across dowels within 1.0ℓ distance from wheel loads.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tie Bars Table -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span> Longitudinal Joint Tie Bars Design</h3>
+              <span class="panel-badge">IRC:58 TABLE 7</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="audit-table">
+                <thead>
+                  <tr>
+                    <th>Bar Specification</th>
+                    <th>Diameter</th>
+                    <th>A<sub>s</sub> Req.</th>
+                    <th>Provided Spacing</th>
+                    <th>Provided Length</th>
+                    <th>IRC:58 Check</th>
+                  </tr>
+                </thead>
+                <tbody id="tableTieBody"></tbody>
+              </table>
+            </div>
+
+            <div class="alert-box info" style="margin-top:12px; margin-bottom:0;">
+              <div>
+                <strong>Design Criteria:</strong> Longitudinal tie bars counteract tensile friction stresses across lane joints: A<sub>s</sub> = (b &middot; f &middot; W) / S<sub>st</sub>. Bar diameter is capped at 16 mm and spacing at 750 mm to allow proper joint warping.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         WORKSPACE 4: CONSTRUCTION VARIANTS (SLIDE 58)
+         ==================================================================== -->
+    <div id="ws-variants" class="workspace-pane">
+      <div id="tabCompare" class="panel-card">
         <div class="panel-header">
-          <h3><span>🔄</span> Multi-Scenario Comparison: 4 Design Construction Options (IRC:58 Slide 58)</h3>
-          <span class="panel-badge">ENGINEERING TRADE-OFF ANALYSIS</span>
+          <div class="panel-header-title-group">
+            <span class="panel-overline">Engineering Trade-Off Analysis</span>
+            <h3><span><svg class="app-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/></svg></span> Multi-Scenario Comparison: 4 Design Construction Options (IRC:58 Slide 58)</h3>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="card-action-btn" type="button" title="Understand Structural Variants">Understand</button>
+            <button class="btn-audit-action btn-audit-secondary btn-print-trigger" id="btnPrintVariants" type="button" title="Print/Export Variant Comparison Sheet" style="padding:5px 12px; font-size:12px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+              <span>Export PDF</span>
+            </button>
+          </div>
         </div>
 
         <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 13.5px;">
-          IRC:58:2015 provides distinct structural configurations for rigid pavements across Indian highways. Provision
-          of tied concrete shoulders or widened outer lanes reduces edge flexural stresses by up to 30%, resulting in
-          lower slab thickness requirements and substantial concrete material savings.
+          IRC:58:2015 provides distinct structural configurations for rigid pavements across Indian highways. Provision of tied concrete shoulders or widened outer lanes reduces edge flexural stresses by up to 30%, resulting in lower slab thickness requirements and substantial concrete material savings.
         </p>
 
         <div class="table-responsive">
@@ -461,880 +1294,7 @@
 
         <div class="alert-box info" style="margin-top: 16px;">
           <div>
-            <strong>Key Engineering Finding:</strong> Untied pavements without concrete shoulders experience
-            significantly higher edge flexural stresses under commercial traffic, necessitating greater slab depth.
-            Conversely, pavements with <em>tied concrete shoulders</em> or <em>widened outer lanes (+0.6m)</em> achieve
-            optimal durability and concrete cost efficiency.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ====================================================================
-         TAB 4: PROJECT & TRAFFIC SETUP
-         ==================================================================== -->
-    <div id="tabTraffic" class="tab-pane">
-      <!-- Traffic Calculation Mode Selector -->
-      <div
-        style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px; padding:14px 20px; border-radius:var(--radius-lg); background:var(--bg-card); border:1.5px solid var(--accent-cyan); box-shadow:0 4px 14px rgba(2,132,199,0.08);">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <span style="font-size:24px;">📊</span>
-          <div>
-            <div style="font-weight:700; font-size:14.5px; color:var(--text-primary);">Traffic Calculation Engine Mode
-            </div>
-            <div style="font-size:12px; color:var(--text-secondary);">Direct calculation from user-entered traffic
-              counts &amp; geometry per IRC:58:2015 Clause 4</div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px;">
-          <button type="button" id="btnModeUserInput" class="btn btn-primary"
-            style="padding:6px 14px; font-size:12.5px;">⚡ User-Entered Traffic Data (Active)</button>
-          <button type="button" id="btnModeBenchmark" class="btn btn-secondary"
-            style="padding:6px 14px; font-size:12.5px;">📋 IRC:58 Benchmark Fixed Dataset</button>
-        </div>
-      </div>
-
-      <div class="panel-grid">
-        <!-- Panel 1: Highway Project, Lane Configuration & Geometry -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>📋</span> Highway Project &amp; Road Geometry</h3>
-            <span class="panel-badge">LANES &amp; DIMENSIONS</span>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group span-2">
-              <label class="form-label" for="inputProjectName">Project Description / Highway Name</label>
-              <input type="text" id="inputProjectName" class="form-input"
-                value="National Highway Rigid Pavement Project">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="selectNumLanes">Number of Lanes</label>
-              <select id="selectNumLanes" class="form-select">
-                <option value="2">2 Lanes (Single / Dual)</option>
-                <option value="4" selected>4 Lanes (2 lanes each direction)</option>
-                <option value="6">6 Lanes (3 lanes each direction)</option>
-                <option value="8">8 Lanes (4 lanes each direction)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="selectCarriageway">Carriageway Configuration</label>
-              <select id="selectCarriageway" class="form-select">
-                <option value="divided" selected>Divided Carriageway (with Median)</option>
-                <option value="undivided">Undivided Carriageway (Single Roadway)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputLaneWidth">Design Lane Width</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputLaneWidth" class="form-input" value="3.5" step="0.05" min="3.0" max="4.5">
-                <span class="input-unit-tag">m</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Standard IRC lane width: 3.50 m (or
-                3.75 m)</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputJointSpacing">Transverse Joint Spacing (Slab Length)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputJointSpacing" class="form-input" value="4.5" step="0.1" min="3.5"
-                  max="6.0">
-                <span class="input-unit-tag">m</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Spacing between transverse
-                contraction joints</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputDesignPeriod">Design Period (n)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputDesignPeriod" class="form-input" value="30" min="10" max="50">
-                <span class="input-unit-tag">Years</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">IRC:58 recommends 30 years for
-                National/State Highways</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputDesignLanePct">Design Lane Distribution Factor (D)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputDesignLanePct" class="form-input" value="25" step="1" min="10" max="60">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;" id="labelDesignLanePreset">IRC:58
-                Table 4.1: 25% for 4-lane divided</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel 2: Directional Traffic Volumes (Crossing in Each & Every Direction) -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🚛</span> Traffic Crossing in Each Direction</h3>
-            <span class="panel-badge">DIRECTIONAL VOLUME</span>
-          </div>
-
-          <div class="alert-box info" style="margin-bottom:16px;">
-            <div>
-              Enter the commercial traffic count <strong>crossing in each and every direction</strong>. The heavier
-              direction is automatically selected for rigid pavement design.
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="inputCvpdDir1">Direction 1 Traffic (Direction A / Northbound)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputCvpdDir1" class="form-input" value="3000" min="50" max="50000" step="50">
-                <span class="input-unit-tag">CVPD</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Commercial vehicles / day in Dir 1
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputCvpdDir2">Direction 2 Traffic (Direction B / Southbound)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputCvpdDir2" class="form-input" value="3000" min="50" max="50000" step="50">
-                <span class="input-unit-tag">CVPD</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Commercial vehicles / day in Dir 2
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputGrowthRate">Annual Traffic Growth Rate (r)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputGrowthRate" class="form-input" value="5.0" step="0.1" min="1" max="15">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Compound annual growth rate (default
-                5.0%)</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputPredominantDirPct">Predominant Direction Split Factor</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputPredominantDirPct" class="form-input" value="50" step="0.5" min="40"
-                  max="75">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">% of total traffic in heavier
-                direction</div>
-            </div>
-          </div>
-
-          <!-- Live Directional Calculation Metrics -->
-          <div
-            style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; padding:12px 16px; border-radius:var(--radius-md); background:var(--bg-secondary); border:1px solid var(--border-subtle);">
-            <div>
-              <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
-                Total 24-Hour Two-Way Traffic</div>
-              <div style="font-size:18px; font-weight:700; color:var(--accent-cyan);" id="displayTotal2WayCvpd">6,000
-                CVPD</div>
-            </div>
-            <div>
-              <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
-                Predominant Direction Traffic</div>
-              <div style="font-size:18px; font-weight:700; color:var(--accent-emerald);" id="displayPredominantCvpd">
-                3,000 CVPD</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel 3: 24-Hour & 12-to-12 Hour Day/Night Traffic with 6-Hour Critical Fatigue Windows -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>⏱️</span> 24h &amp; 12h-to-12h Traffic (6h Day &amp; 6h Night Peaks)</h3>
-            <span class="panel-badge">BUC: 6h DAY &bull; TDC: 6h NIGHT</span>
-          </div>
-
-          <div class="alert-box info" style="margin-bottom:16px;">
-            <div>
-              <strong>IRC:58 Fatigue Distribution:</strong> 24-hour traffic is split into <strong>12-Hour Day (6 AM – 6
-                PM)</strong> and <strong>12-Hour Night (6 PM – 6 AM)</strong>.
-              Fatigue is calculated for the <strong>critical 6-hour windows</strong>:
-              <ul style="margin:6px 0 0 16px; padding:0;">
-                <li><strong>Daytime Peak 6 Hours (10 AM – 4 PM):</strong> Bottom-Up Cracking (BUC) under maximum
-                  positive temperature curling (+ΔT).</li>
-                <li><strong>Nighttime Peak 6 Hours (0 AM – 6 AM):</strong> Top-Down Cracking (TDC) under maximum
-                  negative temperature curling (-ΔT).</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="inputNightTrafficPct">Nighttime 12-Hour Traffic (6 PM – 6 AM)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputNightTrafficPct" class="form-input" value="60" min="10" max="90" step="1">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
-                Passing in 12h Night: <strong id="displayNight12hCount" style="color:var(--text-primary);">1,800
-                  CVPD</strong>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Daytime 12-Hour Traffic (6 AM – 6 PM)</label>
-              <div class="input-with-unit">
-                <input type="text" id="displayDayTrafficPct" class="form-input" value="40%" disabled
-                  style="background:var(--bg-secondary); cursor:not-allowed;">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
-                Passing in 12h Day: <strong id="displayDay12hCount" style="color:var(--text-primary);">1,200
-                  CVPD</strong>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputPeak6hDayPct">Peak 6-Hour Daytime Window (10 AM – 4 PM) [BUC]</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputPeak6hDayPct" class="form-input" value="50" step="1" min="20" max="80">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
-                Passing in 6h Day: <strong id="displayDay6hCount" style="color:var(--accent-amber);">600 CVPD</strong>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputPeak6hNightPct">Peak 6-Hour Nighttime Window (0 AM – 6 AM)
-                [TDC]</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputPeak6hNightPct" class="form-input" value="50" step="1" min="20" max="80">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
-                Passing in 6h Night: <strong id="displayNight6hCount" style="color:var(--accent-cyan);">900
-                  CVPD</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel 4: Vehicle Type Percentages & Axle Proportions -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🚛</span> Vehicle Type % &amp; Axle Proportions</h3>
-            <span class="panel-badge">FLEET COMPOSITION</span>
-          </div>
-
-          <div style="margin-bottom:12px; font-size:12.5px; font-weight:600; color:var(--text-primary);">
-            A. Commercial Vehicle Fleet Type Proportions (% of Vehicles)
-          </div>
-          <div class="form-grid" style="margin-bottom:12px;">
-            <div class="form-group">
-              <label class="form-label" for="inputPct2Axle">2-Axle Trucks / Buses (LCV / 2-Axle HCV)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputPct2Axle" class="form-input" value="45" step="0.5" min="0" max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputPct3Axle">3-Axle Multi-Axle Trucks (MAV - Tandem)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputPct3Axle" class="form-input" value="35" step="0.5" min="0" max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputPctMultiAxle">4 to 6+ Axle Semi-Trailers / Articulated</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputPctMultiAxle" class="form-input" value="20" step="0.5" min="0" max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputAxlesPerCv">Average Axles per Commercial Vehicle</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputAxlesPerCv" class="form-input" value="2.35" step="0.01" min="2.0"
-                  max="5.0">
-                <span class="input-unit-tag">axles/CV</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:var(--radius-sm); background:var(--bg-secondary); margin-bottom:16px; font-size:12px;">
-            <span>Vehicle Type Fleet Total:</span>
-            <strong id="fleetPctTotal" style="color:var(--accent-emerald); font-size:13px;">100%</strong>
-          </div>
-
-          <div style="margin-bottom:12px; font-size:12.5px; font-weight:600; color:var(--text-primary);">
-            B. Axle Category Distribution (% of Total Axles in Stream)
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="inputFrontSinglePct">Front Single (Steering)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputFrontSinglePct" class="form-input" value="45" step="0.5" min="0"
-                  max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputRearSinglePct">Rear Single Axles</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputRearSinglePct" class="form-input" value="15" step="0.5" min="0" max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputRearTandemPct">Rear Tandem Axles</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputRearTandemPct" class="form-input" value="25" step="0.5" min="0" max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputRearTridemPct">Rear Tridem Axles</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputRearTridemPct" class="form-input" value="15" step="0.5" min="0" max="100">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:var(--radius-sm); background:var(--bg-secondary); margin-top:10px; font-size:12px;">
-            <span>Axle Category Total:</span>
-            <div>
-              <strong id="axlePctTotal" style="color:var(--accent-emerald); font-size:13px;">100%</strong>
-              <span id="axlePctWarning"
-                style="color:var(--accent-rose); font-weight:600; margin-left:8px; display:none;">⚠ Must sum to
-                100%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel 5: Distance of Vehicle & Joint Spacing Comparison -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>📏</span> Distance of Vehicle &amp; Joint Spacing Filter</h3>
-            <span class="panel-badge">WHEELBASE vs JOINT SPACING</span>
-          </div>
-
-          <div class="alert-box info" style="margin-bottom:16px;">
-            <div>
-              <strong>Top-Down Cracking (TDC) Mechanics:</strong> When the <em>distance of vehicle (wheelbase)</em> is
-              less than or equal to the <em>transverse joint spacing (slab length)</em>, both front steering and rear
-              drive axles simultaneously load the single slab panel during nighttime curl, generating the peak tensile
-              stress at the top surface.
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="inputVehicleDistance">Average Distance of Vehicle (Wheelbase)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputVehicleDistance" class="form-input" value="4.2" step="0.1" min="2.5"
-                  max="8.0">
-                <span class="input-unit-tag">m</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Spacing between front axle and rear
-                axle/tandem</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Transverse Joint Spacing (Slab Length)</label>
-              <div class="input-with-unit">
-                <input type="text" id="displayJointSpacingCompare" class="form-input" value="4.5 m" disabled
-                  style="background:var(--bg-secondary); cursor:not-allowed;">
-                <span class="input-unit-tag">m</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Defined in Road Geometry panel</div>
-            </div>
-
-            <div class="form-group span-2">
-              <label class="form-label" for="inputWheelbasePct">% Vehicles with Wheelbase &le; Joint Spacing</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputWheelbasePct" class="form-input" value="55" min="10" max="95" step="1">
-                <span class="input-unit-tag">%</span>
-              </div>
-              <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Only this fraction of commercial
-                vehicles causes critical TDC at contraction joints</div>
-            </div>
-          </div>
-
-          <div id="badgeWheelbaseStatus"
-            style="margin-top:14px; padding:10px 14px; border-radius:var(--radius-sm); background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.25); font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
-            <span>ℹ️</span>
-            <span>Vehicle wheelbase (<strong>4.2 m</strong>) &le; joint spacing (<strong>4.5 m</strong>) &rarr; critical
-              for Top-Down Cracking.</span>
-          </div>
-        </div>
-
-        <!-- Panel 6: Shoulder & Joint Structural Conditions -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🏗️</span> Shoulder &amp; Joint Structural Conditions</h3>
-            <span class="panel-badge">IRC:58 CLAUSE 6</span>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="selectShoulderType">Shoulder Support Condition</label>
-              <select id="selectShoulderType" class="form-select">
-                <option value="tied" selected>Tied Concrete Shoulder (Reduces Edge Stress)</option>
-                <option value="untied">Without Concrete Shoulder</option>
-                <option value="widened">Widened Outer Lane (+0.6m Monolithic Action)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="selectTransverseJoint">Transverse Joint Type</label>
-              <select id="selectTransverseJoint" class="form-select">
-                <option value="doweled" selected>Doweled Contraction Joint (β = 0.66, 50% LTE)</option>
-                <option value="undoweled">Undoweled Joint (β = 0.90, 10% LTE)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Traffic Calculation Summary (rendered dynamically) -->
-      <div id="trafficSummaryContainer" style="margin-top: 24px;"></div>
-    </div>
-
-    <!-- ====================================================================
-         TAB 5: AXLE LOAD SPECTRUM
-         ==================================================================== -->
-    <div id="tabSpectrum" class="tab-pane">
-      <div class="panel-card">
-        <div class="panel-header">
-          <h3><span>🚛</span> Axle Load Spectrum Distribution (IRC:58:2015 48-Hour Weighing Survey)</h3>
-          <span class="panel-badge">12 LOAD INTERVALS PER AXLE TYPE</span>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
-          <!-- Single Axle Spectrum -->
-          <div>
-            <h4 style="color:var(--accent-cyan); font-size:14px; margin-bottom:8px;">Single Axles (100% = 15% Rear)</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Class (kN)</th>
-                    <th>Mean (kN)</th>
-                    <th>Frequency (%)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>185-195</td>
-                    <td>190</td>
-                    <td>18.15%</td>
-                  </tr>
-                  <tr>
-                    <td>175-185</td>
-                    <td>180</td>
-                    <td>17.43%</td>
-                  </tr>
-                  <tr>
-                    <td>165-175</td>
-                    <td>170</td>
-                    <td>18.27%</td>
-                  </tr>
-                  <tr>
-                    <td>155-165</td>
-                    <td>160</td>
-                    <td>12.98%</td>
-                  </tr>
-                  <tr>
-                    <td>145-155</td>
-                    <td>150</td>
-                    <td>2.98%</td>
-                  </tr>
-                  <tr>
-                    <td>135-145</td>
-                    <td>140</td>
-                    <td>1.62%</td>
-                  </tr>
-                  <tr>
-                    <td>125-135</td>
-                    <td>130</td>
-                    <td>2.62%</td>
-                  </tr>
-                  <tr>
-                    <td>115-125</td>
-                    <td>120</td>
-                    <td>2.65%</td>
-                  </tr>
-                  <tr>
-                    <td>105-115</td>
-                    <td>110</td>
-                    <td>2.65%</td>
-                  </tr>
-                  <tr>
-                    <td>95-105</td>
-                    <td>100</td>
-                    <td>3.25%</td>
-                  </tr>
-                  <tr>
-                    <td>85-95</td>
-                    <td>90</td>
-                    <td>3.25%</td>
-                  </tr>
-                  <tr>
-                    <td>&lt; 85</td>
-                    <td>85</td>
-                    <td>14.15%</td>
-                  </tr>
-                  <tr class="table-summary-row">
-                    <td colspan="2">TOTAL</td>
-                    <td>100.00%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Tandem Axle Spectrum -->
-          <div>
-            <h4 style="color:var(--accent-amber); font-size:14px; margin-bottom:8px;">Tandem Axles (100% = 25% Rear)
-            </h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Class (kN)</th>
-                    <th>Mean (kN)</th>
-                    <th>Frequency (%)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>380-400</td>
-                    <td>390</td>
-                    <td>14.50%</td>
-                  </tr>
-                  <tr>
-                    <td>360-380</td>
-                    <td>370</td>
-                    <td>10.50%</td>
-                  </tr>
-                  <tr>
-                    <td>340-360</td>
-                    <td>350</td>
-                    <td>3.63%</td>
-                  </tr>
-                  <tr>
-                    <td>320-340</td>
-                    <td>330</td>
-                    <td>2.50%</td>
-                  </tr>
-                  <tr>
-                    <td>300-320</td>
-                    <td>310</td>
-                    <td>2.69%</td>
-                  </tr>
-                  <tr>
-                    <td>280-300</td>
-                    <td>290</td>
-                    <td>1.26%</td>
-                  </tr>
-                  <tr>
-                    <td>260-280</td>
-                    <td>270</td>
-                    <td>3.90%</td>
-                  </tr>
-                  <tr>
-                    <td>240-260</td>
-                    <td>250</td>
-                    <td>5.19%</td>
-                  </tr>
-                  <tr>
-                    <td>220-240</td>
-                    <td>230</td>
-                    <td>6.30%</td>
-                  </tr>
-                  <tr>
-                    <td>200-220</td>
-                    <td>210</td>
-                    <td>6.40%</td>
-                  </tr>
-                  <tr>
-                    <td>180-200</td>
-                    <td>190</td>
-                    <td>8.90%</td>
-                  </tr>
-                  <tr>
-                    <td>&lt; 180</td>
-                    <td>180</td>
-                    <td>34.23%</td>
-                  </tr>
-                  <tr class="table-summary-row">
-                    <td colspan="2">TOTAL</td>
-                    <td>100.00%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Tridem Axle Spectrum -->
-          <div>
-            <h4 style="color:#e11d48; font-size:14px; margin-bottom:8px;">Tridem Axles (100% = 15% Rear)</h4>
-            <div class="table-responsive">
-              <table class="audit-table">
-                <thead>
-                  <tr>
-                    <th>Class (kN)</th>
-                    <th>Mean (kN)</th>
-                    <th>Frequency (%)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>530-560</td>
-                    <td>545</td>
-                    <td>5.23%</td>
-                  </tr>
-                  <tr>
-                    <td>500-530</td>
-                    <td>515</td>
-                    <td>4.85%</td>
-                  </tr>
-                  <tr>
-                    <td>470-500</td>
-                    <td>485</td>
-                    <td>3.44%</td>
-                  </tr>
-                  <tr>
-                    <td>440-470</td>
-                    <td>455</td>
-                    <td>7.12%</td>
-                  </tr>
-                  <tr>
-                    <td>410-440</td>
-                    <td>425</td>
-                    <td>10.11%</td>
-                  </tr>
-                  <tr>
-                    <td>380-410</td>
-                    <td>395</td>
-                    <td>12.01%</td>
-                  </tr>
-                  <tr>
-                    <td>350-380</td>
-                    <td>365</td>
-                    <td>15.57%</td>
-                  </tr>
-                  <tr>
-                    <td>320-350</td>
-                    <td>335</td>
-                    <td>13.28%</td>
-                  </tr>
-                  <tr>
-                    <td>290-320</td>
-                    <td>305</td>
-                    <td>4.55%</td>
-                  </tr>
-                  <tr>
-                    <td>260-290</td>
-                    <td>275</td>
-                    <td>3.16%</td>
-                  </tr>
-                  <tr>
-                    <td>230-260</td>
-                    <td>245</td>
-                    <td>3.10%</td>
-                  </tr>
-                  <tr>
-                    <td>&lt; 230</td>
-                    <td>230</td>
-                    <td>17.58%</td>
-                  </tr>
-                  <tr class="table-summary-row">
-                    <td colspan="2">TOTAL</td>
-                    <td>100.00%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ====================================================================
-         TAB 6: SUBGRADE & MATERIALS
-         ==================================================================== -->
-    <div id="tabMaterials" class="tab-pane">
-      <div class="panel-grid">
-        <!-- Subgrade & Subbase -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🌱</span> Subgrade Reaction & Subbase Foundation</h3>
-            <span class="panel-badge">IRC:58 TABLES 2 & 3</span>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="inputCbr">Effective Compacted Subgrade CBR</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputCbr" class="form-input" value="8.0" step="0.5" min="2" max="50">
-                <span class="input-unit-tag">%</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="selectSubbaseType">Subbase Type</label>
-              <select id="selectSubbaseType" class="form-select">
-                <option value="gsb" selected>Granular Subbase (GSB)</option>
-                <option value="dlc">Dry Lean Concrete (DLC)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputSubbaseThickness">Subbase Thickness</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputSubbaseThickness" class="form-input" value="150" step="25" min="100"
-                  max="300">
-                <span class="input-unit-tag">mm</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="selectZone">Climatic Zone (Temperature Diff)</label>
-              <select id="selectZone" class="form-select">
-                <option value="I">Zone I: Hilly (J&K, Ladakh, HP, Uttarakhand, Sikkim)</option>
-                <option value="II">Zone II: Punjab, UP, Gujarat, Rajasthan, Haryana, Delhi</option>
-                <option value="III" selected>Zone III: Bihar, Jharkhand, WB, Assam, Eastern Odisha</option>
-                <option value="IV">Zone IV: Maharashtra, Karnataka, AP, Telangana, MP, TN</option>
-                <option value="V">Zone V: Kerala and South Tamil Nadu</option>
-                <option value="VI">Zone VI: Coastal bounded by hills (Konkan, Goa)</option>
-                <option value="VII">Zone VII: Coastal unbounded by hills</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Concrete Properties -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🏛️</span> Pavement Quality Concrete (PQC) Properties</h3>
-            <span class="panel-badge">IS:456 & IRC:58</span>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="selectConcreteGrade">Concrete Grade</label>
-              <select id="selectConcreteGrade" class="form-select">
-                <option value="M35">M35 (fck = 35 MPa)</option>
-                <option value="M40" selected>M40 (fck = 40 MPa)</option>
-                <option value="M45">M45 (fck = 45 MPa)</option>
-                <option value="M50">M50 (fck = 50 MPa)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputFck28">28-day Compressive Strength (f<sub>ck</sub>)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputFck28" class="form-input" value="40" step="1" min="30" max="60">
-                <span class="input-unit-tag">MPa</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputDesignFlexural">Design Flexural Strength (f<sub>cr</sub>)</label>
-              <div class="input-with-unit">
-                <input type="number" id="inputDesignFlexural" class="form-input" value="4.87" step="0.01" min="3.5"
-                  max="6.5">
-                <span class="input-unit-tag">MPa</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Elastic Modulus E</label>
-              <div class="input-with-unit">
-                <input type="text" class="form-input" value="31,623" disabled>
-                <span class="input-unit-tag">MPa</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ====================================================================
-         TAB 7: DOWEL & TIE BAR DESIGN
-         ==================================================================== -->
-    <div id="tabJoints" class="tab-pane">
-      <div class="panel-grid">
-        <!-- Dowel Bars Table -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🔩</span> Transverse Contraction & Expansion Joint Dowel Bars</h3>
-            <span class="panel-badge">IRC:58 TABLE 6</span>
-          </div>
-
-          <div class="table-responsive">
-            <table class="audit-table">
-              <thead>
-                <tr>
-                  <th>Joint Location</th>
-                  <th>Diameter</th>
-                  <th>Length</th>
-                  <th>Spacing</th>
-                  <th>Joint Width</th>
-                  <th>IRC:58 Check</th>
-                </tr>
-              </thead>
-              <tbody id="tableDowelBody"></tbody>
-            </table>
-          </div>
-
-          <div class="alert-box info" style="margin-top:12px; margin-bottom:0;">
-            <div>
-              <strong>Design Criteria:</strong> Dowel bars are recommended for traffic &gt; 450 CVPD to prevent faulting
-              across contraction joints. Load transfer efficiency of 50% is achieved across dowels within 1.0ℓ distance
-              from wheel loads.
-            </div>
-          </div>
-        </div>
-
-        <!-- Tie Bars Table -->
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3><span>🔗</span> Longitudinal Joint Tie Bars Design</h3>
-            <span class="panel-badge">IRC:58 TABLE 7</span>
-          </div>
-
-          <div class="table-responsive">
-            <table class="audit-table">
-              <thead>
-                <tr>
-                  <th>Bar Specification</th>
-                  <th>Diameter</th>
-                  <th>A<sub>s</sub> Req.</th>
-                  <th>Provided Spacing</th>
-                  <th>Provided Length</th>
-                  <th>IRC:58 Check</th>
-                </tr>
-              </thead>
-              <tbody id="tableTieBody"></tbody>
-            </table>
-          </div>
-
-          <div class="alert-box info" style="margin-top:12px; margin-bottom:0;">
-            <div>
-              <strong>Design Criteria:</strong> Longitudinal tie bars counteract tensile friction stresses across lane
-              joints: A<sub>s</sub> = (b &middot; f &middot; W) / S<sub>st</sub>. Bar diameter is capped at 16 mm and
-              spacing at 750 mm to allow proper joint warping.
-            </div>
+            <strong>Key Engineering Finding:</strong> Untied pavements without concrete shoulders experience significantly higher edge flexural stresses under commercial traffic, necessitating greater slab depth. Conversely, pavements with <em>tied concrete shoulders</em> or <em>widened outer lanes (+0.6m)</em> achieve optimal durability and concrete cost efficiency.
           </div>
         </div>
       </div>
