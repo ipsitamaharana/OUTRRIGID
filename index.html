@@ -196,117 +196,117 @@
       </div>
     </section>
 
+    <!-- Executive Trial Control & Real-Time Structural Response Pipeline (Fixed Across All Sections) -->
+    <section class="trial-hub-container">
+      <!-- Zone 1: Interactive Trial Slab Controller (Input Driver) -->
+      <div class="trial-controller-card">
+        <div class="trial-card-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            <span class="trial-hub-label">Trial Slab Thickness</span>
+          </div>
+          <button id="btnAutoOptimize" class="btn-optimize-chip" title="Automatically solve for minimal safe slab thickness">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Auto-Optimize</span>
+          </button>
+        </div>
+
+        <div class="trial-input-row">
+          <div class="trial-numeric-wrap">
+            <input type="number" id="inputNumericThickness" class="trial-numeric-input" min="100" max="700" step="1" value="310" aria-label="Trial Slab Thickness in mm">
+            <span class="trial-unit-tag">mm</span>
+          </div>
+          <div class="trial-stepper-group">
+            <button type="button" id="btnStepMinus" class="trial-step-btn" title="Decrease Thickness by 5mm">&minus;5</button>
+            <button type="button" id="btnStepPlus" class="trial-step-btn" title="Increase Thickness by 5mm">+5</button>
+          </div>
+        </div>
+
+        <div class="trial-slider-row">
+          <input type="range" id="sliderThickness" class="custom-range-slider" min="100" max="700" step="0.5" value="310" aria-label="Slab Thickness Slider">
+          <div class="trial-slider-labels">
+            <span>100 mm</span>
+            <span id="displayThickness" style="display:none;">310 mm</span>
+            <span>700 mm</span>
+          </div>
+        </div>
+
+        <div class="trial-meta-row">
+          <div class="trial-meta-item">
+            <span class="meta-label">Total Construction:</span>
+            <strong class="meta-val" id="kpiFinalThickness">320 mm (+10mm wear)</strong>
+          </div>
+          <div class="trial-live-badge">
+            <span class="live-indicator-dot"></span>
+            <span>Live Recalculation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone 2: Connected Real-Time Structural Response Pipeline (Output Response) -->
+      <div class="trial-pipeline-card">
+        <div class="trial-card-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="trial-hub-label">Real-Time Structural Response Pipeline</span>
+          </div>
+          <span class="pipeline-flow-tag">Cause &rarr; Effect Linkage</span>
+        </div>
+
+        <div class="pipeline-grid">
+          <!-- Step 1: Stiffness Node -->
+          <div class="pipeline-node">
+            <div class="node-step">01. Stiffness (l)</div>
+            <div class="node-main-val" id="displayRadiusL">1.084 m</div>
+            <div class="node-sub-val">Radius of Rel. Stiffness</div>
+            <div class="node-badge">k<sub>eff</sub>: <span id="displayEffectiveK">58.14</span> MPa/m</div>
+          </div>
+
+          <div class="pipeline-connector">
+            <svg class="flow-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <!-- Step 2: Fatigue Damage Node -->
+          <div class="pipeline-node">
+            <div class="node-step">02. Fatigue Damage</div>
+            <div class="node-main-val"><span id="displayCfdTdc">0.306</span> <span class="node-unit">TDC</span></div>
+            <div class="node-sub-val">Top-Down Night Curling</div>
+            <div class="node-badge">BUC Day: <span id="displayCfdBuc">0.000</span></div>
+          </div>
+
+          <div class="pipeline-connector">
+            <svg class="flow-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+
+          <!-- Step 3: Safety Verdict Node -->
+          <div class="pipeline-node node-verdict" id="safetyCard">
+            <div class="node-step">03. IRC:58 Safety</div>
+            <div class="node-main-val"><span id="displayTotalCfd">0.306</span> <span class="node-unit">/ 1.000</span></div>
+            <div class="safety-status-badge" id="safetyBadge">
+              <svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>SAFE DESIGN</span>
+            </div>
+            <div class="node-sub-val" style="margin-top: 5px;">Limit: &Sigma; CFD &le; 1.0</div>
+          </div>
+        </div>
+
+        <!-- Full-Width Live Capacity Gauge -->
+        <div class="pipeline-gauge-wrap">
+          <div class="gauge-meta-row">
+            <span class="gauge-title">IRC:58 Fatigue Life Capacity Utilization</span>
+            <span class="gauge-value" id="gaugePctLabel">30.6% Used</span>
+          </div>
+          <div class="cfd-meter-bar">
+            <div class="cfd-meter-fill" id="cfdMeterFill" style="width: 30.6%; background-color: var(--accent-emerald);"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ====================================================================
          WORKSPACE 1: DESIGN STUDIO & SIMULATION
          ==================================================================== -->
     <div id="ws-studio" class="workspace-pane active">
-      <!-- Executive Trial Control & Real-Time Structural Response Pipeline -->
-      <section class="trial-hub-container">
-        <!-- Zone 1: Interactive Trial Slab Controller (Input Driver) -->
-        <div class="trial-controller-card">
-          <div class="trial-card-header">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-              <span class="trial-hub-label">Trial Slab Thickness</span>
-            </div>
-            <button id="btnAutoOptimize" class="btn-optimize-chip" title="Automatically solve for minimal safe slab thickness">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Auto-Optimize</span>
-            </button>
-          </div>
-
-          <div class="trial-input-row">
-            <div class="trial-numeric-wrap">
-              <input type="number" id="inputNumericThickness" class="trial-numeric-input" min="100" max="700" step="1" value="310" aria-label="Trial Slab Thickness in mm">
-              <span class="trial-unit-tag">mm</span>
-            </div>
-            <div class="trial-stepper-group">
-              <button type="button" id="btnStepMinus" class="trial-step-btn" title="Decrease Thickness by 5mm">&minus;5</button>
-              <button type="button" id="btnStepPlus" class="trial-step-btn" title="Increase Thickness by 5mm">+5</button>
-            </div>
-          </div>
-
-          <div class="trial-slider-row">
-            <input type="range" id="sliderThickness" class="custom-range-slider" min="100" max="700" step="0.5" value="310" aria-label="Slab Thickness Slider">
-            <div class="trial-slider-labels">
-              <span>100 mm</span>
-              <span id="displayThickness" style="display:none;">310 mm</span>
-              <span>700 mm</span>
-            </div>
-          </div>
-
-          <div class="trial-meta-row">
-            <div class="trial-meta-item">
-              <span class="meta-label">Total Construction:</span>
-              <strong class="meta-val" id="kpiFinalThickness">320 mm (+10mm wear)</strong>
-            </div>
-            <div class="trial-live-badge">
-              <span class="live-indicator-dot"></span>
-              <span>Live Recalculation</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Zone 2: Connected Real-Time Structural Response Pipeline (Output Response) -->
-        <div class="trial-pipeline-card">
-          <div class="trial-card-header">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <svg class="app-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              <span class="trial-hub-label">Real-Time Structural Response Pipeline</span>
-            </div>
-            <span class="pipeline-flow-tag">Cause &rarr; Effect Linkage</span>
-          </div>
-
-          <div class="pipeline-grid">
-            <!-- Step 1: Stiffness Node -->
-            <div class="pipeline-node">
-              <div class="node-step">01. Stiffness (l)</div>
-              <div class="node-main-val" id="displayRadiusL">1.084 m</div>
-              <div class="node-sub-val">Radius of Rel. Stiffness</div>
-              <div class="node-badge">k<sub>eff</sub>: <span id="displayEffectiveK">58.14</span> MPa/m</div>
-            </div>
-
-            <div class="pipeline-connector">
-              <svg class="flow-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-
-            <!-- Step 2: Fatigue Damage Node -->
-            <div class="pipeline-node">
-              <div class="node-step">02. Fatigue Damage</div>
-              <div class="node-main-val"><span id="displayCfdTdc">0.306</span> <span class="node-unit">TDC</span></div>
-              <div class="node-sub-val">Top-Down Night Curling</div>
-              <div class="node-badge">BUC Day: <span id="displayCfdBuc">0.000</span></div>
-            </div>
-
-            <div class="pipeline-connector">
-              <svg class="flow-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-
-            <!-- Step 3: Safety Verdict Node -->
-            <div class="pipeline-node node-verdict" id="safetyCard">
-              <div class="node-step">03. IRC:58 Safety</div>
-              <div class="node-main-val"><span id="displayTotalCfd">0.306</span> <span class="node-unit">/ 1.000</span></div>
-              <div class="safety-status-badge" id="safetyBadge">
-                <svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>SAFE DESIGN</span>
-              </div>
-              <div class="node-sub-val" style="margin-top: 5px;">Limit: &Sigma; CFD &le; 1.0</div>
-            </div>
-          </div>
-
-          <!-- Full-Width Live Capacity Gauge -->
-          <div class="pipeline-gauge-wrap">
-            <div class="gauge-meta-row">
-              <span class="gauge-title">IRC:58 Fatigue Life Capacity Utilization</span>
-              <span class="gauge-value" id="gaugePctLabel">30.6% Used</span>
-            </div>
-            <div class="cfd-meter-bar">
-              <div class="cfd-meter-fill" id="cfdMeterFill" style="width: 30.6%; background-color: var(--accent-emerald);"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- Visualizer Panels -->
       <div id="tabVisualizer" class="panel-grid">
         <!-- Curling Simulation Canvas -->
