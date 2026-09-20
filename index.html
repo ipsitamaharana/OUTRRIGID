@@ -85,115 +85,69 @@
       </div>
     </header>
 
-    <!-- Geoclimatic Location & Thermal Context Studio (IRC:58:2015 Pan-India) -->
+    <!-- Geoclimatic Location & Thermal Context Studio (IRC:58:2015 Pan-India) - Compact Strip -->
     <section class="geoclimatic-hub-card">
-      <div class="geo-hub-header">
-        <div class="geo-hub-title-group">
-          <div class="geo-hub-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-          </div>
-          <div>
-            <div class="geo-hub-headline-row">
-              <h2 class="geo-hub-title">Project Location &amp; IRC:58 Climatic Context</h2>
-              <span class="geo-hub-badge">IRC:58 Table 1</span>
-            </div>
-            <p class="geo-hub-subtitle">
-              Select any Indian State or UT to automatically bind IRC:58 climatic zones, curling temperature differentials, and regional subgrade defaults.
-            </p>
-          </div>
+      <div class="geo-strip-left">
+        <div class="geo-strip-label">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>Location</span>
+        </div>
+        <div class="geo-select-wrapper">
+          <select id="selectIndianState" class="form-select">
+            <!-- Populated dynamically with all 28 States & UTs -->
+          </select>
+        </div>
+        <div class="geo-zone-group">
+          <span id="badgeStateZone" class="geo-zone-pill">Zone III</span>
+          <span id="geoZoneDescription" class="geo-zone-sub">Gangetic Plains &amp; Eastern Delta</span>
         </div>
       </div>
 
-      <div class="geo-hub-content-grid">
-        <!-- Column 1: State & Sub-Region Selection + Context Pills -->
-        <div class="geo-picker-column">
-          <div class="geo-field-group">
-            <div class="geo-field-label-row">
-              <label for="selectIndianState" class="geo-field-label">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-                <span>State / Union Territory &amp; Region</span>
-              </label>
-              <span class="geo-field-hint">Searchable selector</span>
-            </div>
-            <div class="geo-select-wrapper">
-              <select id="selectIndianState" class="form-select">
-                <!-- Populated dynamically with all 28 States & UTs -->
-              </select>
-            </div>
-          </div>
-
-          <!-- Quick Context Telemetry Pills -->
-          <div class="geo-context-pills">
-            <div class="geo-pill" id="geoPillState" title="Selected State / Territory">
-              <span class="geo-pill-label">State:</span>
-              <strong class="geo-pill-val" id="geoStateVal">Bihar</strong>
-            </div>
-            <div class="geo-pill" id="geoPillRegion" title="IRC:58 Sub-Regional Terrain">
-              <span class="geo-pill-label">Region:</span>
-              <strong class="geo-pill-val" id="geoRegionVal">Gangetic Plains</strong>
-            </div>
-            <div class="geo-pill" id="geoPillCbr" title="IRC:58 Recommended Subgrade CBR for this region">
-              <span class="geo-pill-label">Rec. CBR:</span>
-              <strong class="geo-pill-val" id="geoCbrVal">8.0%</strong>
-            </div>
-            <div class="geo-pill" id="geoPillTraffic" title="Baseline Regional Traffic Flow Volume">
-              <span class="geo-pill-label">Base Traffic:</span>
-              <strong class="geo-pill-val" id="geoTrafficVal">3,000 CVPD</strong>
-            </div>
-          </div>
+      <div class="geo-strip-right">
+        <!-- Daytime Max Curl ΔT -->
+        <div class="geo-stat-badge" title="Daytime Maximum Curling Temperature Differential (Bottom-Up Cracking)">
+          <span class="geo-badge-icon text-amber">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          </span>
+          <span class="geo-badge-lbl">Day &Delta;T:</span>
+          <strong id="geoDayTempDisplay" class="geo-badge-val text-amber">+16.8&deg;C</strong>
+          <span class="geo-badge-tag">BUC</span>
         </div>
 
-        <!-- Column 2: Live Climatic & Curling Thermal Gradient Telemetry -->
-        <div class="geo-telemetry-column">
-          <!-- Metric 1: Climatic Zone -->
-          <div class="geo-telemetry-card card-zone">
-            <div class="geo-card-top">
-              <span class="geo-card-label">IRC:58 Climate Zone</span>
-              <span class="geo-card-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </span>
-            </div>
-            <div class="geo-card-value-wrap">
-              <span id="badgeStateZone" class="geo-zone-pill">Zone III</span>
-            </div>
-            <div class="geo-card-foot" id="geoZoneDescription">Gangetic Plains &amp; Eastern Delta</div>
-          </div>
+        <!-- Nighttime Warping ΔT -->
+        <div class="geo-stat-badge" title="Nighttime Negative Warping Temperature Differential (Top-Down Cracking)">
+          <span class="geo-badge-icon text-cyan">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </span>
+          <span class="geo-badge-lbl">Night &Delta;T:</span>
+          <strong id="geoNightTempDisplay" class="geo-badge-val text-cyan">-13.4&deg;C</strong>
+          <span class="geo-badge-tag">TDC</span>
+        </div>
 
-          <!-- Metric 2: Daytime Positive Curling Delta T -->
-          <div class="geo-telemetry-card card-day">
-            <div class="geo-card-top">
-              <span class="geo-card-label">Daytime Max Curl (&Delta;T)</span>
-              <span class="geo-card-icon text-amber">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-              </span>
-            </div>
-            <div class="geo-card-value-wrap">
-              <span id="geoDayTempDisplay" class="geo-temp-val text-amber">+16.8&deg;C</span>
-            </div>
-            <div class="geo-card-foot">Bottom-Up Cracking (BUC)</div>
-          </div>
+        <!-- Subgrade CBR -->
+        <div class="geo-stat-badge" title="IRC:58 Recommended Subgrade CBR for this region">
+          <span class="geo-badge-lbl">Rec. CBR:</span>
+          <strong class="geo-badge-val" id="geoCbrVal">8.0%</strong>
+        </div>
 
-          <!-- Metric 3: Nighttime Negative Curling Delta T -->
-          <div class="geo-telemetry-card card-night">
-            <div class="geo-card-top">
-              <span class="geo-card-label">Nighttime Warping (&Delta;T)</span>
-              <span class="geo-card-icon text-cyan">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-              </span>
-            </div>
-            <div class="geo-card-value-wrap">
-              <span id="geoNightTempDisplay" class="geo-temp-val text-cyan">-13.4&deg;C</span>
-            </div>
-            <div class="geo-card-foot">Top-Down Cracking (TDC)</div>
-          </div>
-
-          <!-- Hidden legacy element for 100% backward-compatibility -->
-          <span id="badgeDayTemp" style="display: none;">+16.8°C Day / -13.4°C Night</span>
+        <!-- Base Traffic -->
+        <div class="geo-stat-badge" title="Baseline Regional Commercial Vehicle Traffic Volume">
+          <span class="geo-badge-lbl">Traffic:</span>
+          <strong class="geo-badge-val" id="geoTrafficVal">3,000 CVPD</strong>
         </div>
       </div>
+
+      <!-- Hidden backward-compatibility elements to preserve JS bindings -->
+      <span id="badgeDayTemp" style="display: none;">+16.8°C Day / -13.4°C Night</span>
+      <span id="geoStateVal" style="display: none;">Bihar</span>
+      <span id="geoRegionVal" style="display: none;">Gangetic Plains</span>
+      <div id="geoPillState" style="display: none;"></div>
+      <div id="geoPillRegion" style="display: none;"></div>
+      <div id="geoPillCbr" style="display: none;"></div>
+      <div id="geoPillTraffic" style="display: none;"></div>
     </section>
 
     <!-- Executive Trial Control & Real-Time Structural Response Pipeline (Fixed Across All Sections) -->
