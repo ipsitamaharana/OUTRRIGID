@@ -79,11 +79,11 @@ class PavementVisualizer {
       }
     } else {
       if (this.mode === "day") {
-        bgGrad.addColorStop(0, "rgba(15, 23, 42, 0.9)");
-        bgGrad.addColorStop(1, "rgba(30, 41, 59, 0.95)");
+        bgGrad.addColorStop(0, "rgba(24, 24, 24, 0.95)");
+        bgGrad.addColorStop(1, "rgba(32, 32, 32, 0.95)");
       } else {
-        bgGrad.addColorStop(0, "rgba(10, 15, 30, 0.95)");
-        bgGrad.addColorStop(1, "rgba(15, 23, 42, 1.0)");
+        bgGrad.addColorStop(0, "rgba(20, 20, 20, 0.95)");
+        bgGrad.addColorStop(1, "rgba(26, 26, 26, 1.0)");
       }
     }
     ctx.fillStyle = bgGrad;
