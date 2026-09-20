@@ -1,0 +1,24 @@
+{
+  "name": "irc58-rigid-pavement-studio",
+  "version": "1.0.0",
+  "description": "Full-stack web application for the stress analysis and fatigue design of Jointed Plain Concrete Pavements (JPCP) as per IRC:58:2015 guidelines.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "irc58",
+    "rigid-pavement",
+    "jpcp",
+    "civil-engineering",
+    "stress-analysis",
+    "fatigue-damage"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
