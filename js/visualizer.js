@@ -79,11 +79,11 @@ class PavementVisualizer {
       }
     } else {
       if (this.mode === "day") {
-        bgGrad.addColorStop(0, "rgba(15, 23, 42, 0.9)");
-        bgGrad.addColorStop(1, "rgba(30, 41, 59, 0.95)");
+        bgGrad.addColorStop(0, "rgba(24, 24, 24, 0.95)");
+        bgGrad.addColorStop(1, "rgba(32, 32, 32, 0.95)");
       } else {
-        bgGrad.addColorStop(0, "rgba(10, 15, 30, 0.95)");
-        bgGrad.addColorStop(1, "rgba(15, 23, 42, 1.0)");
+        bgGrad.addColorStop(0, "rgba(20, 20, 20, 0.95)");
+        bgGrad.addColorStop(1, "rgba(26, 26, 26, 1.0)");
       }
     }
     ctx.fillStyle = bgGrad;
@@ -220,19 +220,36 @@ class PavementVisualizer {
     }
 
     // Overlay Temperature Differential Badge
-    ctx.fillStyle = isDark ? (isDay ? "rgba(234, 88, 12, 0.2)" : "rgba(59, 130, 246, 0.2)") : (isDay ? "rgba(255, 237, 213, 0.9)" : "rgba(224, 242, 254, 0.9)");
-    ctx.strokeStyle = isDay ? "#ea580c" : "#0284c7";
-    ctx.lineWidth = 1;
-    this.roundRect(ctx, 16, 16, 280, 52, 8, true, true);
-
-    ctx.fillStyle = isDark ? "#ffffff" : "#0f172a";
-    ctx.font = "700 13px 'Plus Jakarta Sans', sans-serif";
     const dayText = this.currentData ? `Day Temp Diff: +${this.currentData.derived.dayDeltaT}°C` : "Day Temp Diff: +16.8°C";
     const nightText = this.currentData ? `Night Temp Diff: -${this.currentData.derived.nightDeltaT}°C (incl. 5°C curl)` : "Night Temp Diff: -13.4°C";
-    ctx.fillText(isDay ? "☀️ DAYTIME POSITIVE GRADIENT" : "🌙 NIGHTTIME NEGATIVE GRADIENT", 26, 36);
-    ctx.fillStyle = isDay ? "#c2410c" : "#0369a1";
-    ctx.font = "12px 'JetBrains Mono', monospace";
-    ctx.fillText(isDay ? dayText : nightText, 26, 54);
+    const titleText = isDay ? "DAYTIME POSITIVE GRADIENT" : "NIGHTTIME NEGATIVE GRADIENT";
+    const subtitleText = isDay ? dayText : nightText;
+
+    ctx.font = "700 12.5px 'Plus Jakarta Sans', sans-serif";
+    const titleW = ctx.measureText(titleText).width;
+    ctx.font = "500 11.5px 'JetBrains Mono', monospace";
+    const subW = ctx.measureText(subtitleText).width;
+    const badgeW = Math.max(280, Math.ceil(Math.max(titleW, subW)) + 26);
+    const badgeH = 50;
+
+    ctx.fillStyle = isDark
+      ? (isDay ? "rgba(234, 88, 12, 0.16)" : "rgba(14, 116, 144, 0.2)")
+      : (isDay ? "rgba(255, 237, 213, 0.92)" : "rgba(224, 242, 254, 0.92)");
+    ctx.strokeStyle = isDark
+      ? (isDay ? "rgba(251, 146, 60, 0.6)" : "rgba(56, 189, 248, 0.6)")
+      : (isDay ? "#ea580c" : "#0284c7");
+    ctx.lineWidth = 1;
+    this.roundRect(ctx, 16, 16, badgeW, badgeH, 8, true, true);
+
+    ctx.fillStyle = isDark ? "#ffffff" : "#0f172a";
+    ctx.font = "700 12.5px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillText(titleText, 26, 35);
+
+    ctx.fillStyle = isDark
+      ? (isDay ? "#fb923c" : "#38bdf8")
+      : (isDay ? "#c2410c" : "#0284c7");
+    ctx.font = "500 11.5px 'JetBrains Mono', monospace";
+    ctx.fillText(subtitleText, 26, 52);
 
     ctx.restore();
   }
