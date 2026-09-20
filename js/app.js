@@ -937,25 +937,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const t = result.tdc;
 
     el.totalCfdSummaryContainer.innerHTML = `
-      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; padding:18px 24px; background:${s.isSafe ? "var(--status-safe-bg)" : "var(--status-danger-bg)"
-      }; border: 1.5px solid ${s.isSafe ? "var(--status-safe-border)" : "var(--status-danger-border)"}; border-radius:14px;">
+      <div class="total-cfd-card ${s.isSafe ? "safe" : "unsafe"}">
         <div>
-          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:${s.isSafe ? "var(--status-safe-text)" : "var(--status-danger-text)"
-      };">Combined Fatigue Damage Check (IRC:58 Miner's Rule)</div>
-          <div style="font-family:'Outfit',sans-serif; font-size:22px; font-weight:700; color:var(--text-primary); margin-top:2px;">
+          <div class="total-cfd-header">Combined Fatigue Damage Check (IRC:58 Miner's Rule)</div>
+          <div class="total-cfd-equation">
             CFD (BUC) [${b.totalBUCDamage.toFixed(3)}] + CFD (TDC) [${t.totalTDCDamage.toFixed(3)}] = <span style="color:${s.isSafe ? "var(--status-safe-text)" : "var(--status-danger-text)"
       }">${s.totalCFD.toFixed(3)}</span> &le; 1.000
           </div>
-          <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">
-            Required PQC Slab Thickness: <strong>${s.trialThicknessMm} mm</strong> | Recommended Provided Thickness: <strong>${s.finalThicknessMm
-      } mm</strong> (Includes +10mm grinding & texturing allowance)
+          <div class="total-cfd-sub">
+            Required PQC Slab Thickness: <strong>${s.trialThicknessMm} mm</strong> | Recommended Provided: <strong>${s.finalThicknessMm
+      } mm</strong> (+10mm wear allowance)
           </div>
         </div>
-        <div style="text-align:right;">
-          <div class="safety-status-badge" style="font-size:15px; padding:8px 20px;">
+        <div class="total-cfd-right">
+          <div class="total-cfd-badge">
             ${s.isSafe ? "SAFE DESIGN" : "UNSAFE DESIGN"}
           </div>
-          <div style="font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--text-muted); margin-top:4px;">
+          <div class="total-cfd-sub-right">
             ${s.isSafe ? "Adequate structural life under IRC:58 fatigue" : "Increase trial thickness to reduce top/bottom stresses"}
           </div>
         </div>
