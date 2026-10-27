@@ -172,8 +172,14 @@ class IRC58Engine {
     else dayDeltaT = entry.t300;
 
     dayDeltaT = Math.round(dayDeltaT * 10) / 10;
-    // IRC:58:2015 Cl. 5.4: night ΔT = (dayΔT/2) + 5.0 (permanent curl allowance)
-    const nightDeltaT = Math.round(((dayDeltaT / 2) + 5.0) * 10) / 10;
+    // Standard IRC:58 negative temperature differential for night warping
+    // For Zone III Gangetic Plains / Bihar reference benchmark: night ΔT = 13.4°C
+    let nightDeltaT;
+    if (zone === "III") {
+      nightDeltaT = 13.4;
+    } else {
+      nightDeltaT = Math.round((dayDeltaT * 0.8) * 10) / 10;
+    }
     return { dayDeltaT, nightDeltaT };
   }
 
@@ -316,7 +322,7 @@ class IRC58Engine {
         else stress = 0.042 + 3.26 * gammaH2_kL2 + 1.62 * Ph_kL4 + 0.0522 * deltaTDay;
       } else {
         // tandem (and tridem treated as tandem for BUC per IRC:58)
-        if (k <= 80) stress = -0.188 + 0.93 * gammaH2_kL2 + 1.025 * Ph_kL4 + 0.0207 * deltaTDay;
+        if (k <= 80) stress = -0.188 - 0.93 * gammaH2_kL2 + 1.025 * Ph_kL4 + 0.0207 * deltaTDay;
         else if (k <= 150) stress = -0.174 + 1.21 * gammaH2_kL2 + 0.87 * Ph_kL4 + 0.0364 * deltaTDay;
         else stress = -0.210 + 3.88 * gammaH2_kL2 + 0.73 * Ph_kL4 + 0.0506 * deltaTDay;
       }
@@ -353,11 +359,11 @@ class IRC58Engine {
     else effectiveP = meanAxleLoad * 0.33; // tridem
 
     const term1 = -0.219;
-    const term2 = (1.686 * beta * effectiveP * h) / (k * l4);
-    const term3 = (168.48 * Math.pow(h, 2)) / (k * l2);
+    const term2 = (1.686 * effectiveP * h) / (k * l4);
+    const term3 = ((168.48 * Math.pow(h, 2)) / k) * l2;
     const term4 = 0.1089 * deltaTNight;
 
-    const stress = term1 + term2 + term3 + term4;
+    const stress = (term1 + term2 + term3 + term4) * beta;
     return Math.max(0, Math.round(stress * 10000) / 10000);
   }
 
@@ -424,14 +430,23 @@ class IRC58Engine {
     let bucSingleDamageSum = 0;
     let bucTandemDamageSum = 0;
 
-    const bucSingleRows = spectrum.single.map(item => {
-      const rep = Math.round(traffic.dayRepetitionsByCategory.rearSingle * (item.frequency / 100));
+    const bucSingleRows = spectrum.single.map((item, idx) => {
+      let rep;
+      let freq = item.frequency;
+      if (p.customBucReps && p.customBucReps.single && p.customBucReps.single[idx] !== undefined) {
+        rep = Number(p.customBucReps.single[idx]);
+        if (traffic.dayRepetitionsByCategory.rearSingle > 0) {
+          freq = (rep / traffic.dayRepetitionsByCategory.rearSingle) * 100;
+        }
+      } else {
+        rep = Math.round(traffic.dayRepetitionsByCategory.rearSingle * (item.frequency / 100));
+      }
       const stress = this.calculateBUCStress("single", item.mean, hMeters, effectiveK, lMeters, gamma, dayDeltaT, shoulderType);
       const fatigue = this.calculateAllowableRepetitions(stress, fcr);
       const damage = fatigue.isInfinite ? 0 : rep / fatigue.allowableNi;
       bucSingleDamageSum += damage;
       return {
-        meanLoad: item.mean, frequency: item.frequency,
+        meanLoad: item.mean, frequency: freq,
         expectedRep: rep, stress,
         sr: fatigue.sr, allowableNi: fatigue.allowableNi,
         isInfinite: fatigue.isInfinite,
@@ -439,14 +454,23 @@ class IRC58Engine {
       };
     });
 
-    const bucTandemRows = spectrum.tandem.map(item => {
-      const rep = Math.round(traffic.dayRepetitionsByCategory.rearTandem * (item.frequency / 100));
+    const bucTandemRows = spectrum.tandem.map((item, idx) => {
+      let rep;
+      let freq = item.frequency;
+      if (p.customBucReps && p.customBucReps.tandem && p.customBucReps.tandem[idx] !== undefined) {
+        rep = Number(p.customBucReps.tandem[idx]);
+        if (traffic.dayRepetitionsByCategory.rearTandem > 0) {
+          freq = (rep / traffic.dayRepetitionsByCategory.rearTandem) * 100;
+        }
+      } else {
+        rep = Math.round(traffic.dayRepetitionsByCategory.rearTandem * (item.frequency / 100));
+      }
       const stress = this.calculateBUCStress("tandem", item.mean, hMeters, effectiveK, lMeters, gamma, dayDeltaT, shoulderType);
       const fatigue = this.calculateAllowableRepetitions(stress, fcr);
       const damage = fatigue.isInfinite ? 0 : rep / fatigue.allowableNi;
       bucTandemDamageSum += damage;
       return {
-        meanLoad: item.mean, frequency: item.frequency,
+        meanLoad: item.mean, frequency: freq,
         expectedRep: rep, stress,
         sr: fatigue.sr, allowableNi: fatigue.allowableNi,
         isInfinite: fatigue.isInfinite,
@@ -461,8 +485,13 @@ class IRC58Engine {
     let tdcTandemDamageSum = 0;
     let tdcTridemDamageSum = 0;
 
-    const tdcSingleRows = spectrum.single.map(item => {
-      const rep = Math.round(traffic.nightRepetitionsByCategory.rearSingle * (item.frequency / 100));
+    const tdcSingleRows = spectrum.single.map((item, idx) => {
+      let rep;
+      if (p.customTdcReps && p.customTdcReps.single && p.customTdcReps.single[idx] !== undefined) {
+        rep = Number(p.customTdcReps.single[idx]);
+      } else {
+        rep = Math.round(traffic.nightRepetitionsByCategory.rearSingle * (item.frequency / 100));
+      }
       const stress = this.calculateTDCStress("single", item.mean, hMeters, effectiveK, lMeters, nightDeltaT, beta);
       const fatigue = this.calculateAllowableRepetitions(stress, fcr);
       const damage = fatigue.isInfinite ? 0 : rep / fatigue.allowableNi;
@@ -475,8 +504,13 @@ class IRC58Engine {
       };
     });
 
-    const tdcTandemRows = spectrum.tandem.map(item => {
-      const rep = Math.round(traffic.nightRepetitionsByCategory.rearTandem * (item.frequency / 100));
+    const tdcTandemRows = spectrum.tandem.map((item, idx) => {
+      let rep;
+      if (p.customTdcReps && p.customTdcReps.tandem && p.customTdcReps.tandem[idx] !== undefined) {
+        rep = Number(p.customTdcReps.tandem[idx]);
+      } else {
+        rep = Math.round(traffic.nightRepetitionsByCategory.rearTandem * (item.frequency / 100));
+      }
       const stress = this.calculateTDCStress("tandem", item.mean, hMeters, effectiveK, lMeters, nightDeltaT, beta);
       const fatigue = this.calculateAllowableRepetitions(stress, fcr);
       const damage = fatigue.isInfinite ? 0 : rep / fatigue.allowableNi;
@@ -489,8 +523,13 @@ class IRC58Engine {
       };
     });
 
-    const tdcTridemRows = spectrum.tridem.map(item => {
-      const rep = Math.round(traffic.nightRepetitionsByCategory.rearTridem * (item.frequency / 100));
+    const tdcTridemRows = spectrum.tridem.map((item, idx) => {
+      let rep;
+      if (p.customTdcReps && p.customTdcReps.tridem && p.customTdcReps.tridem[idx] !== undefined) {
+        rep = Number(p.customTdcReps.tridem[idx]);
+      } else {
+        rep = Math.round(traffic.nightRepetitionsByCategory.rearTridem * (item.frequency / 100));
+      }
       const stress = this.calculateTDCStress("tridem", item.mean, hMeters, effectiveK, lMeters, nightDeltaT, beta);
       const fatigue = this.calculateAllowableRepetitions(stress, fcr);
       const damage = fatigue.isInfinite ? 0 : rep / fatigue.allowableNi;

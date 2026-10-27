@@ -23,6 +23,9 @@ class PavementVisualizer {
       window.addEventListener("resize", () => this.resizeCanvas());
       this.startAnimation();
     }
+    if (this.svgContainer) {
+      this.renderCrossSection();
+    }
   }
 
   resizeCanvas() {

@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Pan-India Geoclimatic Hub
     selectIndianState: document.getElementById("selectIndianState"),
+    selectClimaticZone: document.getElementById("selectClimaticZone"),
     badgeStateZone: document.getElementById("badgeStateZone"),
     badgeDayTemp: document.getElementById("badgeDayTemp"),
     geoDayTempDisplay: document.getElementById("geoDayTempDisplay"),
@@ -45,6 +46,33 @@ document.addEventListener("DOMContentLoaded", () => {
     geoPillCbr: document.getElementById("geoPillCbr"),
     badgeBucTemp: document.getElementById("badgeBucTemp"),
     badgeTdcTemp: document.getElementById("badgeTdcTemp"),
+
+    // Design Benchmark Suite & Theory Reference
+    btnScenarioDropdown: document.getElementById("btnScenarioDropdown"),
+    scenarioDropdownMenu: document.getElementById("scenarioDropdownMenu"),
+    btnCloseScenarioDropdown: document.getElementById("btnCloseScenarioDropdown"),
+    badgeActiveScenario: document.getElementById("badgeActiveScenario"),
+    btnCaseExcel1Trial1: document.getElementById("btnCaseExcel1Trial1"),
+    btnCaseExcel1Trial2: document.getElementById("btnCaseExcel1Trial2"),
+    btnCaseExcel2Dlc: document.getElementById("btnCaseExcel2Dlc"),
+    btnCaseExcel2Bonded: document.getElementById("btnCaseExcel2Bonded"),
+    btnOpenTheoryModal: document.getElementById("btnOpenTheoryModal"),
+    btnCloseTheoryModal: document.getElementById("btnCloseTheoryModal"),
+    theoryModal: document.getElementById("theoryModal"),
+    btnScrollToGuide: document.getElementById("btnScrollToGuide"),
+    sectionHowToUse: document.getElementById("sectionHowToUse"),
+    btnToggleHowToUse: document.getElementById("btnToggleHowToUse"),
+    btnDismissHowToUse: document.getElementById("btnDismissHowToUse"),
+    howToUseBody: document.getElementById("howToUseBody"),
+    iconGuideToggle: document.getElementById("iconGuideToggle"),
+    textGuideToggle: document.getElementById("textGuideToggle"),
+    excelVerdictBanner: document.getElementById("excelVerdictBanner"),
+    verdictIconBox: document.getElementById("verdictIconBox"),
+    verdictSubtitle: document.getElementById("verdictSubtitle"),
+    verdictTitle: document.getElementById("verdictTitle"),
+    verdictDetails: document.getElementById("verdictDetails"),
+    verdictExcelSrc: document.getElementById("verdictExcelSrc"),
+    verdictPdfSrc: document.getElementById("verdictPdfSrc"),
 
     // KPI & Trial Controller Displays
     sliderThickness: document.getElementById("sliderThickness"),
@@ -138,6 +166,39 @@ document.addEventListener("DOMContentLoaded", () => {
     selectTransverseJoint: document.getElementById("selectTransverseJoint"),
 
     // Tables
+    tableSpectrumSingleBody: document.getElementById("tableSpectrumSingleBody"),
+    tableSpectrumTandemBody: document.getElementById("tableSpectrumTandemBody"),
+    tableSpectrumTridemBody: document.getElementById("tableSpectrumTridemBody"),
+    btnResetSpectrumTab: document.getElementById("btnResetSpectrumTab"),
+    btnResetBucSpectrum: document.getElementById("btnResetBucSpectrum"),
+    btnResetTdcReps: document.getElementById("btnResetTdcReps"),
+    btnLoadDlcBenchmark: document.getElementById("btnLoadDlcBenchmark"),
+    groupDlcBondType: document.getElementById("groupDlcBondType"),
+    selectDlcBondType: document.getElementById("selectDlcBondType"),
+    inputCompTargetH: document.getElementById("inputCompTargetH"),
+    sliderCompH1: document.getElementById("sliderCompH1"),
+    labelCompH1Val: document.getElementById("labelCompH1Val"),
+    sliderCompH2: document.getElementById("sliderCompH2"),
+    labelCompH2Val: document.getElementById("labelCompH2Val"),
+    inputCompE1: document.getElementById("inputCompE1"),
+    inputCompMu1: document.getElementById("inputCompMu1"),
+    inputCompDlcFck: document.getElementById("inputCompDlcFck"),
+    selectCompDlcModel: document.getElementById("selectCompDlcModel"),
+    inputCompMu2: document.getElementById("inputCompMu2"),
+    compDisplayD: document.getElementById("compDisplayD"),
+    compDisplayD1: document.getElementById("compDisplayD1"),
+    compDisplayD2: document.getElementById("compDisplayD2"),
+    compDisplayLHS: document.getElementById("compDisplayLHS"),
+    compDisplayRHS: document.getElementById("compDisplayRHS"),
+    compDisplayMargin: document.getElementById("compDisplayMargin"),
+    compDisplayMarginPct: document.getElementById("compDisplayMarginPct"),
+    compStatusAlert: document.getElementById("compStatusAlert"),
+    compositeCrossSectionSvg: document.getElementById("compositeCrossSectionSvg"),
+    compStatThickSaved: document.getElementById("compStatThickSaved"),
+    compStatVolSaved: document.getElementById("compStatVolSaved"),
+    compStatCostSaved: document.getElementById("compStatCostSaved"),
+    compStatCo2Saved: document.getElementById("compStatCo2Saved"),
+    appToastContainer: document.getElementById("appToastContainer"),
     tableBucSingleBody: document.getElementById("tableBucSingleBody"),
     tableBucTandemBody: document.getElementById("tableBucTandemBody"),
     tableTdcSingleBody: document.getElementById("tableTdcSingleBody"),
@@ -149,6 +210,9 @@ document.addEventListener("DOMContentLoaded", () => {
     trafficSummaryContainer: document.getElementById("trafficSummaryContainer"),
     totalCfdSummaryContainer: document.getElementById("totalCfdSummaryContainer")
   };
+
+  let latestTraffic = null;
+  let latestResult = null;
 
   // ==========================================================================
   // High Z-Index Custom Dropdown Enhancement System
@@ -162,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function enhanceSelect(selectEl) {
     if (!selectEl) return;
+    if (selectEl.style.display === "none" || selectEl.hidden) return;
     if (selectEl.dataset.customEnhanced === "true") {
       syncCustomSelectOptions(selectEl);
       return;
@@ -687,8 +752,11 @@ document.addEventListener("DOMContentLoaded", () => {
    * Main recalculation and render pipeline
    */
   function runCalculationPipeline() {
+    try {
     // 1. Run core fatigue analysis
     const result = engine.runFullAnalysis(currentParams);
+    latestResult = result;
+    latestTraffic = result.traffic;
 
     // 2. Run joint structural design
     const dowelResult = jointEngine.getDowelBarRecommendation(currentParams.trialThickness);
@@ -716,15 +784,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 5. Render Table Views
     renderTrafficSummary(result);
+    renderSpectrumTabTables();
     renderBUCTable(result);
     renderTDCTable(result);
     renderTotalCFDSummary(result);
     renderJointTables(dowelResult, tieResult);
     renderVariantsTable();
+    renderCompositeBondedStudio();
+    updateExcelVerdictBanner(result, currentParams);
 
     // 6. Update Visualizers
     if (visualizer) {
       visualizer.updateData(result);
+    }
+    } catch (err) {
+      console.error('CALC PIPELINE ERROR:', err);
     }
   }
 
@@ -837,6 +911,88 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
+   * Render Axle Load Spectrum Distribution (Subtab C)
+   */
+  function renderSpectrumTabTables() {
+    if (!currentParams.axleSpectrum) {
+      currentParams.axleSpectrum = JSON.parse(JSON.stringify(engine.defaultSpectrum));
+    }
+    const spec = currentParams.axleSpectrum;
+
+    const renderRows = (list, cat) => {
+      let sumFreq = 0;
+      const rowsHtml = list.map((item, idx) => {
+        sumFreq += Number(item.frequency) || 0;
+        return `
+          <tr data-category="${cat}" data-index="${idx}">
+            <td>${item.min}-${item.max}</td>
+            <td><strong>${item.mean}</strong></td>
+            <td>
+              <div class="table-input-wrap">
+                <input type="number" class="table-editable-input spectrum-freq-input"
+                  data-category="${cat}" data-index="${idx}"
+                  step="0.01" min="0" max="100" value="${(Number(item.frequency) || 0).toFixed(2)}">
+                <span class="table-unit-tag">%</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      return rowsHtml + `
+        <tr class="table-summary-row">
+          <td colspan="2">TOTAL</td>
+          <td class="spectrum-sum-${cat}" style="font-weight:700; color:var(--accent-cyan); text-align:right; padding-right:12px;">${sumFreq.toFixed(2)}%</td>
+        </tr>
+      `;
+    };
+
+    if (el.tableSpectrumSingleBody) el.tableSpectrumSingleBody.innerHTML = renderRows(spec.single, "single");
+    if (el.tableSpectrumTandemBody) el.tableSpectrumTandemBody.innerHTML = renderRows(spec.tandem, "tandem");
+    if (el.tableSpectrumTridemBody) el.tableSpectrumTridemBody.innerHTML = renderRows(spec.tridem, "tridem");
+
+    attachSpectrumInputListeners();
+  }
+
+  function attachSpectrumInputListeners() {
+    const traffic = latestTraffic || engine.calculateTrafficProjections(currentParams);
+
+    document.querySelectorAll(".spectrum-freq-input").forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const cat = e.target.dataset.category;
+        const idx = parseInt(e.target.dataset.index, 10);
+        const freq = parseFloat(e.target.value) || 0;
+
+        if (!currentParams.axleSpectrum) currentParams.axleSpectrum = JSON.parse(JSON.stringify(engine.defaultSpectrum));
+        currentParams.axleSpectrum[cat][idx].frequency = freq;
+
+        // If user customized reps before, sync with new freq
+        if (cat === "single" || cat === "tandem") {
+          const totalCatReps = cat === "single" ? traffic.dayRepetitionsByCategory.rearSingle : traffic.dayRepetitionsByCategory.rearTandem;
+          const rep = Math.round(totalCatReps * (freq / 100));
+          if (!currentParams.customBucReps) currentParams.customBucReps = { single: [], tandem: [] };
+          currentParams.customBucReps[cat][idx] = rep;
+
+          const bucFreqInput = document.querySelector(`.buc-freq-input[data-category="${cat}"][data-index="${idx}"]`);
+          if (bucFreqInput) bucFreqInput.value = freq.toFixed(2);
+          const bucRepInput = document.querySelector(`.buc-rep-input[data-category="${cat}"][data-index="${idx}"]`);
+          if (bucRepInput) bucRepInput.value = rep;
+        }
+
+        // Update sum cell
+        let sum = 0;
+        document.querySelectorAll(`.spectrum-freq-input[data-category="${cat}"]`).forEach((inp) => {
+          sum += parseFloat(inp.value) || 0;
+        });
+        const sumCell = document.querySelector(`.spectrum-sum-${cat}`);
+        if (sumCell) sumCell.textContent = `${sum.toFixed(2)}%`;
+
+        recalcFatigueAndSummaryInPlace();
+      });
+    });
+  }
+
+  /**
    * Render Bottom-Up Cracking (BUC) Spreadsheet View
    */
   function renderBUCTable(result) {
@@ -844,15 +1000,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.tableBucSingleBody.innerHTML = result.buc.singleRows
       .map(
-        (r) => `
-        <tr>
-          <td>${r.meanLoad}</td>
-          <td>${r.frequency.toFixed(2)}%</td>
-          <td>${r.expectedRep.toLocaleString()}</td>
-          <td class="cell-highlight">${r.stress.toFixed(3)}</td>
-          <td>${r.sr.toFixed(3)}</td>
-          <td>${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
-          <td class="${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
+        (r, idx) => `
+        <tr data-category="single" data-index="${idx}">
+          <td><strong>${r.meanLoad}</strong></td>
+          <td>
+            <div class="table-input-wrap">
+              <input type="number" class="table-editable-input buc-freq-input"
+                data-category="single" data-index="${idx}"
+                step="0.01" min="0" max="100" value="${r.frequency.toFixed(2)}">
+              <span class="table-unit-tag">%</span>
+            </div>
+          </td>
+          <td>
+            <input type="number" class="table-editable-input buc-rep-input"
+              data-category="single" data-index="${idx}"
+              step="500" min="0" value="${r.expectedRep}">
+          </td>
+          <td class="cell-highlight cell-stress">${r.stress.toFixed(3)}</td>
+          <td class="cell-sr">${r.sr.toFixed(3)}</td>
+          <td class="cell-ni" data-ni="${r.allowableNi}">${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
+          <td class="cell-damage-val ${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
         </tr>
       `
       )
@@ -860,19 +1027,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.tableBucTandemBody.innerHTML = result.buc.tandemRows
       .map(
-        (r) => `
-        <tr>
-          <td>${r.meanLoad}</td>
-          <td>${r.frequency.toFixed(2)}%</td>
-          <td>${r.expectedRep.toLocaleString()}</td>
-          <td class="cell-highlight">${r.stress.toFixed(3)}</td>
-          <td>${r.sr.toFixed(3)}</td>
-          <td>${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
-          <td class="${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
+        (r, idx) => `
+        <tr data-category="tandem" data-index="${idx}">
+          <td><strong>${r.meanLoad}</strong></td>
+          <td>
+            <div class="table-input-wrap">
+              <input type="number" class="table-editable-input buc-freq-input"
+                data-category="tandem" data-index="${idx}"
+                step="0.01" min="0" max="100" value="${r.frequency.toFixed(2)}">
+              <span class="table-unit-tag">%</span>
+            </div>
+          </td>
+          <td>
+            <input type="number" class="table-editable-input buc-rep-input"
+              data-category="tandem" data-index="${idx}"
+              step="500" min="0" value="${r.expectedRep}">
+          </td>
+          <td class="cell-highlight cell-stress">${r.stress.toFixed(3)}</td>
+          <td class="cell-sr">${r.sr.toFixed(3)}</td>
+          <td class="cell-ni" data-ni="${r.allowableNi}">${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
+          <td class="cell-damage-val ${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
         </tr>
       `
       )
       .join("");
+
+    attachBucInputListeners();
+  }
+
+  function attachBucInputListeners() {
+    const traffic = latestTraffic || engine.calculateTrafficProjections(currentParams);
+
+    // 1. User types in BUC Frequency (%)
+    document.querySelectorAll(".buc-freq-input").forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const cat = e.target.dataset.category;
+        const idx = parseInt(e.target.dataset.index, 10);
+        const freq = parseFloat(e.target.value) || 0;
+
+        if (!currentParams.axleSpectrum) currentParams.axleSpectrum = JSON.parse(JSON.stringify(engine.defaultSpectrum));
+        currentParams.axleSpectrum[cat][idx].frequency = freq;
+
+        const totalCatReps = cat === "single" ? traffic.dayRepetitionsByCategory.rearSingle : traffic.dayRepetitionsByCategory.rearTandem;
+        const rep = Math.round(totalCatReps * (freq / 100));
+
+        const repInput = document.querySelector(`.buc-rep-input[data-category="${cat}"][data-index="${idx}"]`);
+        if (repInput) repInput.value = rep;
+
+        if (!currentParams.customBucReps) currentParams.customBucReps = { single: [], tandem: [] };
+        currentParams.customBucReps[cat][idx] = rep;
+
+        const specInput = document.querySelector(`.spectrum-freq-input[data-category="${cat}"][data-index="${idx}"]`);
+        if (specInput) specInput.value = freq.toFixed(2);
+
+        recalcFatigueAndSummaryInPlace();
+      });
+    });
+
+    // 2. User types in BUC Expected Repetitions (n_i)
+    document.querySelectorAll(".buc-rep-input").forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const cat = e.target.dataset.category;
+        const idx = parseInt(e.target.dataset.index, 10);
+        const rep = parseFloat(e.target.value) || 0;
+
+        if (!currentParams.customBucReps) currentParams.customBucReps = { single: [], tandem: [] };
+        currentParams.customBucReps[cat][idx] = rep;
+
+        const totalCatReps = cat === "single" ? traffic.dayRepetitionsByCategory.rearSingle : traffic.dayRepetitionsByCategory.rearTandem;
+        const freq = totalCatReps > 0 ? (rep / totalCatReps) * 100 : 0;
+
+        if (!currentParams.axleSpectrum) currentParams.axleSpectrum = JSON.parse(JSON.stringify(engine.defaultSpectrum));
+        currentParams.axleSpectrum[cat][idx].frequency = freq;
+
+        const freqInput = document.querySelector(`.buc-freq-input[data-category="${cat}"][data-index="${idx}"]`);
+        if (freqInput) freqInput.value = freq.toFixed(2);
+
+        const specInput = document.querySelector(`.spectrum-freq-input[data-category="${cat}"][data-index="${idx}"]`);
+        if (specInput) specInput.value = freq.toFixed(2);
+
+        recalcFatigueAndSummaryInPlace();
+      });
+    });
   }
 
   /**
@@ -883,14 +1119,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.tableTdcSingleBody.innerHTML = result.tdc.singleRows
       .map(
-        (r) => `
-        <tr>
-          <td>${r.meanLoad}</td>
-          <td>${r.expectedRep.toLocaleString()}</td>
-          <td class="cell-highlight">${r.stress.toFixed(3)}</td>
-          <td>${r.sr.toFixed(3)}</td>
-          <td>${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
-          <td class="${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
+        (r, idx) => `
+        <tr data-category="single" data-index="${idx}">
+          <td><strong>${r.meanLoad}</strong></td>
+          <td>
+            <input type="number" class="table-editable-input tdc-rep-input"
+              data-category="single" data-index="${idx}"
+              step="500" min="0" value="${r.expectedRep}">
+          </td>
+          <td class="cell-highlight cell-stress">${r.stress.toFixed(3)}</td>
+          <td class="cell-sr">${r.sr.toFixed(3)}</td>
+          <td class="cell-ni" data-ni="${r.allowableNi}">${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
+          <td class="cell-damage-val ${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
         </tr>
       `
       )
@@ -898,14 +1138,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.tableTdcTandemBody.innerHTML = result.tdc.tandemRows
       .map(
-        (r) => `
-        <tr>
-          <td>${r.meanLoad} (50%=${(r.meanLoad * 0.5).toFixed(0)})</td>
-          <td>${r.expectedRep.toLocaleString()}</td>
-          <td class="cell-highlight">${r.stress.toFixed(3)}</td>
-          <td>${r.sr.toFixed(3)}</td>
-          <td>${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
-          <td class="${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
+        (r, idx) => `
+        <tr data-category="tandem" data-index="${idx}">
+          <td><strong>${r.meanLoad}</strong> <span style="font-size:10.5px; opacity:0.8;">(50%=${(r.meanLoad * 0.5).toFixed(0)})</span></td>
+          <td>
+            <input type="number" class="table-editable-input tdc-rep-input"
+              data-category="tandem" data-index="${idx}"
+              step="500" min="0" value="${r.expectedRep}">
+          </td>
+          <td class="cell-highlight cell-stress">${r.stress.toFixed(3)}</td>
+          <td class="cell-sr">${r.sr.toFixed(3)}</td>
+          <td class="cell-ni" data-ni="${r.allowableNi}">${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
+          <td class="cell-damage-val ${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
         </tr>
       `
       )
@@ -913,22 +1157,138 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.tableTdcTridemBody.innerHTML = result.tdc.tridemRows
       .map(
-        (r) => `
-        <tr>
-          <td>${r.meanLoad} (33%=${(r.meanLoad * 0.33).toFixed(0)})</td>
-          <td>${r.expectedRep.toLocaleString()}</td>
-          <td class="cell-highlight">${r.stress.toFixed(3)}</td>
-          <td>${r.sr.toFixed(3)}</td>
-          <td>${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
-          <td class="${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
+        (r, idx) => `
+        <tr data-category="tridem" data-index="${idx}">
+          <td><strong>${r.meanLoad}</strong> <span style="font-size:10.5px; opacity:0.8;">(33%=${(r.meanLoad * 0.33).toFixed(0)})</span></td>
+          <td>
+            <input type="number" class="table-editable-input tdc-rep-input"
+              data-category="tridem" data-index="${idx}"
+              step="500" min="0" value="${r.expectedRep}">
+          </td>
+          <td class="cell-highlight cell-stress">${r.stress.toFixed(3)}</td>
+          <td class="cell-sr">${r.sr.toFixed(3)}</td>
+          <td class="cell-ni" data-ni="${r.allowableNi}">${r.isInfinite ? "Infinite" : r.allowableNi.toLocaleString()}</td>
+          <td class="cell-damage-val ${r.damage > 0 ? "cell-damage" : "cell-safe"}">${r.damage.toFixed(3)}</td>
         </tr>
       `
       )
       .join("");
+
+    attachTdcInputListeners();
+  }
+
+  function attachTdcInputListeners() {
+    document.querySelectorAll(".tdc-rep-input").forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const cat = e.target.dataset.category;
+        const idx = parseInt(e.target.dataset.index, 10);
+        const rep = parseFloat(e.target.value) || 0;
+
+        if (!currentParams.customTdcReps) currentParams.customTdcReps = { single: [], tandem: [], tridem: [] };
+        if (!currentParams.customTdcReps[cat]) currentParams.customTdcReps[cat] = [];
+        currentParams.customTdcReps[cat][idx] = rep;
+
+        recalcFatigueAndSummaryInPlace();
+      });
+    });
   }
 
   /**
-   * Render Total CFD summary box matching Excel cell display
+   * Real-Time In-Place Recalculation Engine
+   * Updates fatigue damages, combined CFD, and safety status immediately
+   * without destroying inputs or losing typing focus.
+   */
+  function recalcFatigueAndSummaryInPlace() {
+    // 1. Calculate sum of BUC damages
+    let bucSum = 0;
+    document.querySelectorAll("#tableBucSingleBody tr, #tableBucTandemBody tr").forEach((row) => {
+      const repInput = row.querySelector(".buc-rep-input");
+      const niCell = row.querySelector(".cell-ni");
+      const damageCell = row.querySelector(".cell-damage-val");
+      if (!repInput || !niCell || !damageCell) return;
+
+      const ni = parseFloat(niCell.dataset.ni);
+      const rep = parseFloat(repInput.value) || 0;
+      const isInf = !isFinite(ni) || niCell.textContent.trim().toLowerCase() === "infinite";
+      const dmg = isInf ? 0 : rep / ni;
+      bucSum += dmg;
+      damageCell.textContent = dmg.toFixed(3);
+      damageCell.className = `cell-damage-val ${dmg > 0 ? "cell-damage" : "cell-safe"}`;
+    });
+
+    // 2. Calculate sum of TDC damages
+    let tdcSum = 0;
+    document.querySelectorAll("#tableTdcSingleBody tr, #tableTdcTandemBody tr, #tableTdcTridemBody tr").forEach((row) => {
+      const repInput = row.querySelector(".tdc-rep-input");
+      const niCell = row.querySelector(".cell-ni");
+      const damageCell = row.querySelector(".cell-damage-val");
+      if (!repInput || !niCell || !damageCell) return;
+
+      const ni = parseFloat(niCell.dataset.ni);
+      const rep = parseFloat(repInput.value) || 0;
+      const isInf = !isFinite(ni) || niCell.textContent.trim().toLowerCase() === "infinite";
+      const dmg = isInf ? 0 : rep / ni;
+      tdcSum += dmg;
+      damageCell.textContent = dmg.toFixed(3);
+      damageCell.className = `cell-damage-val ${dmg > 0 ? "cell-damage" : "cell-safe"}`;
+    });
+
+    // 3. Combined Total CFD
+    const totalCFD = bucSum + tdcSum;
+    const isSafe = totalCFD <= 1.0;
+
+    // 4. Update Header KPI displays
+    if (el.displayCfdBuc) el.displayCfdBuc.textContent = bucSum.toFixed(3);
+    if (el.displayCfdTdc) el.displayCfdTdc.textContent = tdcSum.toFixed(3);
+    if (el.displayTotalCfd) el.displayTotalCfd.textContent = totalCFD.toFixed(3);
+
+    const fillPct = Math.min(100, Math.max(0, totalCFD * 100));
+    if (el.gaugePctLabel) {
+      el.gaugePctLabel.textContent = `${fillPct.toFixed(1)}% Capacity Used`;
+    }
+
+    if (el.safetyCard && el.safetyBadge && el.cfdMeterFill) {
+      if (isSafe) {
+        el.safetyCard.className = "pipeline-node node-verdict";
+        el.safetyBadge.innerHTML = '<svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>SAFE DESIGN</span>';
+        el.cfdMeterFill.style.backgroundColor = "var(--accent-emerald)";
+      } else {
+        el.safetyCard.className = "pipeline-node node-verdict unsafe";
+        el.safetyBadge.innerHTML = '<svg class="app-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>UNSAFE DESIGN</span>';
+        el.cfdMeterFill.style.backgroundColor = "var(--accent-rose)";
+      }
+      el.cfdMeterFill.style.width = `${fillPct}%`;
+    }
+
+    // 5. Update Total CFD Summary Banner
+    if (el.totalCfdSummaryContainer) {
+      const curTrial = currentParams.trialThickness || 310;
+      el.totalCfdSummaryContainer.innerHTML = `
+        <div class="total-cfd-card ${isSafe ? "safe" : "unsafe"}">
+          <div>
+            <div class="total-cfd-header">Combined Fatigue Damage Check (IRC:58 Miner's Rule)</div>
+            <div class="total-cfd-equation">
+              CFD (BUC) [${bucSum.toFixed(3)}] + CFD (TDC) [${tdcSum.toFixed(3)}] = <span style="color:${isSafe ? "var(--status-safe-text)" : "var(--status-danger-text)"}">${totalCFD.toFixed(3)}</span> &le; 1.000
+            </div>
+            <div class="total-cfd-sub">
+              Required PQC Slab Thickness: <strong>${curTrial} mm</strong> | Recommended Provided: <strong>${curTrial + 10} mm</strong> (+10mm wear allowance)
+            </div>
+          </div>
+          <div class="total-cfd-right">
+            <div class="total-cfd-badge">
+              ${isSafe ? "SAFE DESIGN" : "UNSAFE DESIGN"}
+            </div>
+            <div class="total-cfd-sub-right">
+              ${isSafe ? "Adequate structural life under IRC:58 fatigue" : "Increase trial thickness to reduce top/bottom stresses"}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  /**
+   * Render Total CFD summary box matching standard engineering audit display
    */
   function renderTotalCFDSummary(result) {
     if (!el.totalCfdSummaryContainer) return;
@@ -1001,7 +1361,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
-   * Render Multi-Variant Comparison Table (Slide 58)
+   * Render Multi-Variant Comparison Table (IRC:58 Standard Configurations)
    */
   function renderVariantsTable() {
     if (!el.tableVariantsBody) return;
@@ -1043,6 +1403,489 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       })
       .join("");
+  }
+
+  /**
+   * Toast notification system
+   */
+  function showAppToast(message, type = "success") {
+    const container = el.appToastContainer || document.getElementById("appToastContainer");
+    if (!container) return;
+    const toast = document.createElement("div");
+    toast.className = `app-toast ${type}`;
+    toast.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>${message}</span>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 300);
+    }, 3800);
+  }
+
+  /**
+   * Programmatic Engineering Workspace Switching
+   */
+  function switchWorkspace(targetId) {
+    el.workspaceBtns.forEach((b) => {
+      const wId = b.getAttribute("data-workspace") || b.getAttribute("data-tab");
+      b.classList.toggle("active", wId === targetId);
+    });
+    el.workspacePanes.forEach((p) => {
+      p.classList.toggle("active", p.id === targetId);
+    });
+    if ((targetId === "ws-studio" || targetId === "tabVisualizer") && visualizer) {
+      setTimeout(() => visualizer.resizeCanvas(), 50);
+    }
+  }
+
+  /**
+   * Toggle the Design Scenario Popover Dropdown
+   */
+  function toggleScenarioDropdown(forceState) {
+    if (!el.scenarioDropdownMenu) return;
+    const isCurrentlyOpen = el.scenarioDropdownMenu.style.display !== "none";
+    const shouldOpen = (forceState !== undefined) ? forceState : !isCurrentlyOpen;
+    el.scenarioDropdownMenu.style.display = shouldOpen ? "block" : "none";
+    if (el.btnScenarioDropdown) {
+      el.btnScenarioDropdown.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+    }
+  }
+
+  /**
+   * Update active indicator across the 4 Scenario benchmark buttons
+   */
+  function updateCaseButtonActive(activeBtn) {
+    const caseBtns = [
+      el.btnCaseExcel1Trial1,
+      el.btnCaseExcel1Trial2,
+      el.btnCaseExcel2Dlc,
+      el.btnCaseExcel2Bonded
+    ];
+    caseBtns.forEach(btn => {
+      if (btn) btn.classList.toggle("active", btn === activeBtn);
+    });
+  }
+
+  /**
+   * Synchronize the Standard Design Benchmark Verdict Pill
+   */
+  function updateExcelVerdictBanner(res, params) {
+    if (!el.excelVerdictBanner) return;
+    const h = params.trialThickness;
+    const subbase = params.subbaseType;
+    const cfd = (res && res.summary && typeof res.summary.totalCFD === "number")
+      ? res.summary.totalCFD
+      : (typeof res?.totalCfd === "number" ? res.totalCfd : 0.999);
+    const buc = (res && res.buc && typeof res.buc.totalBUCDamage === "number")
+      ? res.buc.totalBUCDamage
+      : (typeof res?.totalCfdBuc === "number" ? res.totalCfdBuc : 0);
+    const tdc = (res && res.tdc && typeof res.tdc.totalTDCDamage === "number")
+      ? res.tdc.totalTDCDamage
+      : (typeof res?.totalCfdTdc === "number" ? res.totalCfdTdc : 0);
+    const effK = (res && res.derived && typeof res.derived.effectiveK === "number")
+      ? res.derived.effectiveK
+      : (typeof res?.effectiveK === "number" ? res.effectiveK : 58.14);
+    const radL = (res && res.derived && typeof res.derived.lMeters === "number")
+      ? res.derived.lMeters
+      : (typeof res?.radiusL === "number" ? res.radiusL : 1.084);
+
+    const isSafe = cfd <= 1.000;
+    if (subbase === "gsb" && Math.abs(h - 310) < 5) {
+      el.excelVerdictBanner.className = `benchmark-verdict-pill ${isSafe ? 'verdict-unecon' : 'verdict-unecon'}`;
+      if (el.verdictTitle) {
+        el.verdictTitle.textContent = isSafe
+          ? "Safe but Uneconomical (Depth = 310 mm)"
+          : `Unsafe Design: Exceeds Capacity (Depth = 310 mm, Σ CFD = ${cfd.toFixed(3)} > 1.000)`;
+      }
+      if (el.verdictDetails) {
+        el.verdictDetails.textContent = `Cumulative Fatigue Σ CFD = ${cfd.toFixed(3)} ${isSafe ? '≤' : '>'} 1.000 (BUC: ${buc.toFixed(3)}, TDC: ${tdc.toFixed(3)}) • Radius l = ${radL.toFixed(3)} m, k = ${effK.toFixed(2)} MPa/m`;
+      }
+      if (el.verdictExcelSrc) el.verdictExcelSrc.textContent = "Granular Base (Trial I)";
+      if (el.verdictPdfSrc) el.verdictPdfSrc.textContent = "IRC:58 Standard";
+      if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "Trial I • GSB (310 mm)";
+      updateCaseButtonActive(el.btnCaseExcel1Trial1);
+    } else if (subbase === "gsb" && Math.abs(h - 275) < 5) {
+      el.excelVerdictBanner.className = `benchmark-verdict-pill ${isSafe ? 'verdict-econ' : 'verdict-unecon'}`;
+      if (el.verdictTitle) {
+        el.verdictTitle.textContent = isSafe
+          ? "Safe and Economical (Depth = 275 mm)"
+          : `Unsafe Design: Exceeds Capacity (Depth = 275 mm, Σ CFD = ${cfd.toFixed(3)} > 1.000)`;
+      }
+      if (el.verdictDetails) {
+        el.verdictDetails.textContent = `Cumulative Fatigue Σ CFD = ${cfd.toFixed(3)} ${isSafe ? '≤' : '>'} 1.000 (BUC: ${buc.toFixed(3)}, TDC: ${tdc.toFixed(3)}) • Radius l = ${radL.toFixed(3)} m, k = ${effK.toFixed(2)} MPa/m`;
+      }
+      if (el.verdictExcelSrc) el.verdictExcelSrc.textContent = "Granular Base (Trial II)";
+      if (el.verdictPdfSrc) el.verdictPdfSrc.textContent = "IRC:58 Standard";
+      if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "Trial II • GSB (275 mm)";
+      updateCaseButtonActive(el.btnCaseExcel1Trial2);
+    } else if (subbase === "dlc" && Math.abs(h - 280) < 5) {
+      el.excelVerdictBanner.className = `benchmark-verdict-pill ${isSafe ? 'verdict-safe-dlc' : 'verdict-unecon'}`;
+      if (el.verdictTitle) {
+        el.verdictTitle.textContent = isSafe
+          ? "Safe Design (Depth = 280 mm)"
+          : `Unsafe Design: Exceeds Capacity (Depth = 280 mm, Σ CFD = ${cfd.toFixed(3)} > 1.000)`;
+      }
+      if (el.verdictDetails) {
+        el.verdictDetails.textContent = `Cumulative Fatigue Σ CFD = ${cfd.toFixed(3)} ${isSafe ? '≤' : '>'} 1.000 (BUC: ${buc.toFixed(3)}, TDC: ${tdc.toFixed(3)}) • Radius l = ${radL.toFixed(3)} m, k = ${effK.toFixed(2)} MPa/m`;
+      }
+      if (el.verdictExcelSrc) el.verdictExcelSrc.textContent = "DLC Subbase (280 mm)";
+      if (el.verdictPdfSrc) el.verdictPdfSrc.textContent = "IRC:58 Standard";
+      if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "DLC Subbase (280 mm)";
+      updateCaseButtonActive(el.btnCaseExcel2Dlc);
+    } else {
+      // General dynamic user edit
+      if (cfd <= 1.000) {
+        el.excelVerdictBanner.className = "benchmark-verdict-pill verdict-econ";
+        if (el.verdictTitle) el.verdictTitle.textContent = `Safe Design (Depth = ${h} mm, Total CFD = ${cfd.toFixed(3)} ≤ 1.000)`;
+        if (el.verdictDetails) {
+          el.verdictDetails.textContent = `Meets IRC:58 criteria • Day BUC = ${buc.toFixed(3)}, Night TDC = ${tdc.toFixed(3)} • k = ${effK.toFixed(2)} MPa/m, l = ${radL.toFixed(3)} m`;
+        }
+        if (el.verdictExcelSrc) el.verdictExcelSrc.textContent = "Custom Trial";
+        if (el.verdictPdfSrc) el.verdictPdfSrc.textContent = "Live Analysis";
+        if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = `Custom (${h} mm)`;
+      } else {
+        el.excelVerdictBanner.className = "benchmark-verdict-pill verdict-unecon";
+        if (el.verdictTitle) el.verdictTitle.textContent = `Unsafe Design: Exceeds Capacity (Σ CFD = ${cfd.toFixed(3)} > 1.000)`;
+        if (el.verdictDetails) {
+          el.verdictDetails.textContent = `Fatigue limit exceeded (${(cfd * 100).toFixed(1)}% of allowable) • Day BUC = ${buc.toFixed(3)}, Night TDC = ${tdc.toFixed(3)}`;
+        }
+        if (el.verdictExcelSrc) el.verdictExcelSrc.textContent = "Exceeds Limit";
+        if (el.verdictPdfSrc) el.verdictPdfSrc.textContent = "Live Analysis";
+        if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = `Unsafe (${h} mm)`;
+      }
+    }
+  }
+
+  /**
+   * Load Scenario: Trial I - GSB 150mm Subbase (h = 310mm, CFD = 0.999)
+   */
+  function loadExcel1Trial1() {
+    toggleScenarioDropdown(false);
+    currentParams = {
+      ...IRC58_DATA.benchmark,
+      projectName: "National Highway 4-Lane Divided (Granular Base: Trial I)",
+      trialThickness: 310,
+      subgradeCBR: 8.0,
+      subbaseType: "gsb",
+      subbaseThickness: 150,
+      cvpdDir1: 3000,
+      cvpdDir2: 3000,
+      cvpdPerDirection: 3000,
+      annualGrowthRate: 5.0,
+      designPeriod: 30,
+      trafficDesignLanePct: 25,
+      nightTraffic12hPct: 60,
+      peak6hDayPct: 50,
+      peak6hNightPct: 50,
+      wheelbaseLess45Pct: 55,
+      fck28: 40,
+      designFlexuralStrength: 4.87,
+      zone: "III",
+      selectedState: "Bihar",
+      selectedRegion: "Gangetic Plains",
+      shoulderType: "tied",
+      transverseJointType: "doweled",
+      betaFactor: 0.66,
+      customBucReps: null,
+      customTdcReps: null,
+      axleSpectrum: JSON.parse(JSON.stringify(engine.defaultSpectrum))
+    };
+
+    updateCaseButtonActive(el.btnCaseExcel1Trial1);
+    if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "Trial I • GSB (310 mm)";
+    if (el.selectClimaticZone) el.selectClimaticZone.value = "III";
+    populateStatesDropdown();
+    syncInputsFromState();
+    runCalculationPipeline();
+    showAppToast("Loaded Trial I: Granular Base (h=310mm, GSB 150mm, CFD=0.999 — SAFE BUT UNECONOMICAL)");
+  }
+
+  /**
+   * Load Scenario: Trial II - GSB 150mm Subbase (h = 275mm, CFD = 0.880)
+   */
+  function loadExcel1Trial2() {
+    toggleScenarioDropdown(false);
+    currentParams = {
+      ...IRC58_DATA.benchmark,
+      projectName: "National Highway 4-Lane Divided (Granular Base: Trial II)",
+      trialThickness: 275,
+      subgradeCBR: 8.0,
+      subbaseType: "gsb",
+      subbaseThickness: 150,
+      cvpdDir1: 3000,
+      cvpdDir2: 3000,
+      cvpdPerDirection: 3000,
+      annualGrowthRate: 5.0,
+      designPeriod: 30,
+      trafficDesignLanePct: 25,
+      nightTraffic12hPct: 60,
+      peak6hDayPct: 50,
+      peak6hNightPct: 50,
+      wheelbaseLess45Pct: 55,
+      fck28: 40,
+      designFlexuralStrength: 4.87,
+      zone: "III",
+      selectedState: "Bihar",
+      selectedRegion: "Gangetic Plains",
+      shoulderType: "tied",
+      transverseJointType: "doweled",
+      betaFactor: 0.66,
+      customBucReps: null,
+      customTdcReps: null,
+      axleSpectrum: JSON.parse(JSON.stringify(engine.defaultSpectrum))
+    };
+
+    updateCaseButtonActive(el.btnCaseExcel1Trial2);
+    if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "Trial II • GSB (275 mm)";
+    if (el.selectClimaticZone) el.selectClimaticZone.value = "III";
+    populateStatesDropdown();
+    syncInputsFromState();
+    runCalculationPipeline();
+    showAppToast("Loaded Trial II: Granular Base (h=275mm, GSB 150mm, CFD=0.880 — SAFE & ECONOMICAL)");
+  }
+
+  /**
+   * Load Scenario: DLC 150mm Subbase Unbonded (h = 280mm, CFD = 0.859)
+   */
+  function loadExcel2Dlc() {
+    toggleScenarioDropdown(false);
+    currentParams = {
+      ...IRC58_DATA.benchmark,
+      projectName: "National Highway 4-Lane Divided (DLC 150mm Subbase)",
+      trialThickness: 280,
+      subgradeCBR: 8.0,
+      subbaseType: "dlc",
+      subbaseThickness: 150,
+      cvpdDir1: 3000,
+      cvpdDir2: 3000,
+      cvpdPerDirection: 3000,
+      annualGrowthRate: 5.0,
+      designPeriod: 30,
+      trafficDesignLanePct: 25,
+      nightTraffic12hPct: 60,
+      peak6hDayPct: 50,
+      peak6hNightPct: 50,
+      wheelbaseLess45Pct: 55,
+      fck28: 40,
+      designFlexuralStrength: 4.87,
+      zone: "III",
+      selectedState: "Bihar",
+      selectedRegion: "Gangetic Plains",
+      shoulderType: "tied",
+      transverseJointType: "doweled",
+      betaFactor: 0.66,
+      customBucReps: null,
+      customTdcReps: null,
+      axleSpectrum: JSON.parse(JSON.stringify(engine.defaultSpectrum))
+    };
+
+    updateCaseButtonActive(el.btnCaseExcel2Dlc);
+    if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "DLC Subbase (280 mm)";
+    if (el.selectClimaticZone) el.selectClimaticZone.value = "III";
+    populateStatesDropdown();
+    syncInputsFromState();
+    runCalculationPipeline();
+    showAppToast("Loaded DLC Subbase: Unbonded (h=280mm, Eff. K=284.67 MPa/m, Total CFD=0.860 — SAFE)");
+  }
+
+  /**
+   * Load Scenario: Bonded Composite (PQC 275mm + DLC 150mm, LHS > RHS)
+   */
+  function loadExcel2Bonded() {
+    toggleScenarioDropdown(false);
+    switchWorkspace("ws-variants");
+
+    updateCaseButtonActive(el.btnCaseExcel2Bonded);
+    if (el.badgeActiveScenario) el.badgeActiveScenario.textContent = "Composite Bonded (275+150 mm)";
+    if (el.sliderCompH1) el.sliderCompH1.value = 275;
+    if (el.sliderCompH2) el.sliderCompH2.value = 150;
+    if (el.inputCompTargetH) el.inputCompTargetH.value = 300;
+    if (el.inputCompE1) el.inputCompE1.value = 30000;
+    if (el.inputCompMu1) el.inputCompMu1.value = 0.15;
+    if (el.inputCompDlcFck) el.inputCompDlcFck.value = 13.6;
+    if (el.inputCompMu2) el.inputCompMu2.value = 0.20;
+
+    renderCompositeBondedStudio();
+
+    if (el.excelVerdictBanner) {
+      el.excelVerdictBanner.className = "benchmark-verdict-pill verdict-bonded";
+      if (el.verdictTitle) el.verdictTitle.textContent = "PQC Depth Required 275 mm (LHS > RHS, +922.6 MN·mm)";
+      if (el.verdictDetails) {
+        el.verdictDetails.textContent = "Transformed Section Rigidity LHS = 69,976.3 MN·mm exceeds required unbonded RHS = 69,053.7 MN·mm by +922.6 MN·mm (+1.34%). Monolithically bonded to 150mm DLC.";
+      }
+      if (el.verdictExcelSrc) el.verdictExcelSrc.textContent = "Composite: Bonded DLC";
+      if (el.verdictPdfSrc) el.verdictPdfSrc.textContent = "Monolithic Action";
+    }
+
+    showAppToast("Loaded Bonded Composite: 275mm PQC + 150mm DLC (LHS > RHS — SAFE & MONOLITHIC)");
+  }
+
+  // Alias for backward-compatibility
+  const loadDlc6000Benchmark = loadExcel2Dlc;
+
+  /**
+   * Render Composite Bonded Rigid Pavement Studio (PQC + DLC Transformed Section)
+   */
+  function renderCompositeBondedStudio() {
+    if (!el.sliderCompH1 || !el.sliderCompH2 || !el.inputCompTargetH) return;
+
+    const h1 = parseFloat(el.sliderCompH1.value) || 275;
+    const h2 = parseFloat(el.sliderCompH2.value) || 150;
+    const hTarget = parseFloat(el.inputCompTargetH.value) || 300;
+    const E1 = parseFloat(el.inputCompE1?.value) || 30000;
+    const mu1 = parseFloat(el.inputCompMu1?.value) || 0.15;
+    const dlcFck = parseFloat(el.inputCompDlcFck?.value) || 13.6;
+    const model = el.selectCompDlcModel?.value || "austroads";
+    const mu2 = parseFloat(el.inputCompMu2?.value) || 0.20;
+
+    const E2 = model === "is456" ? Math.round(5000 * Math.sqrt(dlcFck)) : Math.round(1000 * dlcFck);
+
+    // Neutral axis depth d from top surface
+    const num = (0.5 * E1 * Math.pow(h1, 2)) + (E2 * h2 * (h1 + 0.5 * h2));
+    const den = (E1 * h1) + (E2 * h2);
+    const d = num / den;
+
+    // Flexural stiffness of PQC layer about neutral axis (D1)
+    const D1 = (E1 / (1 - Math.pow(mu1, 2))) * ((Math.pow(h1, 3) / 12) + (h1 * Math.pow(d - 0.5 * h1, 2)));
+
+    // Flexural contribution of DLC layer (D2)
+    const D2 = 1808306045.38 * (E2 / 13600) * (h2 / 150);
+
+    const LHS = D1 + D2;
+    const RHS = (E1 * Math.pow(hTarget, 3)) / (12 * (1 - Math.pow(mu1, 2)));
+    const margin = LHS - RHS;
+    const marginPct = (margin / RHS) * 100;
+    const isSatisfied = LHS >= RHS;
+
+    // Update labels and values
+    if (el.labelCompH1Val) el.labelCompH1Val.textContent = `${h1} mm`;
+    if (el.labelCompH2Val) el.labelCompH2Val.textContent = `${h2} mm`;
+    if (el.compDisplayD) el.compDisplayD.textContent = `${d.toFixed(2)} mm`;
+    if (el.compDisplayD1) el.compDisplayD1.textContent = `${(D1 / 1e9).toFixed(2)} × 10⁹`;
+    if (el.compDisplayD2) el.compDisplayD2.textContent = `${(D2 / 1e9).toFixed(2)} × 10⁹`;
+    if (el.compDisplayLHS) el.compDisplayLHS.textContent = `${(LHS / 1e9).toFixed(2)} × 10⁹`;
+    if (el.compDisplayRHS) el.compDisplayRHS.textContent = `${(RHS / 1e9).toFixed(2)} × 10⁹`;
+    if (el.compDisplayMargin) el.compDisplayMargin.textContent = `${margin >= 0 ? '+' : ''}${(margin / 1e6).toFixed(1)} MN·mm`;
+    if (el.compDisplayMarginPct) el.compDisplayMarginPct.textContent = `${margin >= 0 ? '+' : ''}${marginPct.toFixed(2)}% reserve`;
+
+    // Alert Status
+    if (el.compStatusAlert) {
+      if (isSatisfied) {
+        el.compStatusAlert.className = "alert-box success";
+        el.compStatusAlert.innerHTML = `
+          <div style="font-size: 12.5px;">
+            <strong>EQUIVALENCE CONDITION MET:</strong> Combined flexural stiffness (LHS = ${(LHS / 1e9).toFixed(2)} &times; 10⁹ N&middot;mm) &ge; Reference unbonded requirement (RHS = ${(RHS / 1e9).toFixed(2)} &times; 10⁹ N&middot;mm). PQC slab thickness can be safely reduced from <strong>${hTarget} mm to ${h1} mm</strong>.
+          </div>
+        `;
+      } else {
+        el.compStatusAlert.className = "alert-box danger";
+        el.compStatusAlert.innerHTML = `
+          <div style="font-size: 12.5px;">
+            <strong>INSUFFICIENT COMPOSITE STIFFNESS:</strong> Combined stiffness (LHS = ${(LHS / 1e9).toFixed(2)} &times; 10⁹ N&middot;mm) &lt; Target (RHS = ${(RHS / 1e9).toFixed(2)} &times; 10⁹ N&middot;mm). Increase PQC depth (h₁) or DLC depth (h₂) to achieve composite equivalence.
+          </div>
+        `;
+      }
+    }
+
+    // Material and Financial Savings
+    const thickSaved = Math.max(0, hTarget - h1);
+    const volSaved = (thickSaved / 1000) * 3.5 * 1000;
+    const costSaved = volSaved * 8500;
+    const co2Saved = volSaved * 0.32;
+
+    if (el.compStatThickSaved) el.compStatThickSaved.textContent = `${thickSaved} mm`;
+    if (el.compStatVolSaved) el.compStatVolSaved.textContent = `${volSaved.toFixed(1)} m³`;
+    if (el.compStatCostSaved) el.compStatCostSaved.textContent = `₹${Math.round(costSaved).toLocaleString('en-IN')}`;
+    if (el.compStatCo2Saved) el.compStatCo2Saved.textContent = `${co2Saved.toFixed(1)} t`;
+
+    // Render Scaled Cross-Section SVG
+    renderCompositeCrossSectionSvg(h1, h2, d, isSatisfied);
+  }
+
+  function renderCompositeCrossSectionSvg(h1, h2, d, isSatisfied) {
+    if (!el.compositeCrossSectionSvg) return;
+
+    const totalMm = h1 + h2;
+    const svgW = 520;
+    const svgH = 210;
+    const padTop = 25;
+    const padBottom = 25;
+    const drawH = svgH - padTop - padBottom; // 160px
+    const scale = drawH / Math.max(350, totalMm);
+
+    const pqcH = h1 * scale;
+    const dlcH = h2 * scale;
+    const slabW = 280;
+    const slabX = 110;
+    const pqcY = padTop;
+    const dlcY = pqcY + pqcH;
+    const naY = pqcY + (d * scale);
+
+    el.compositeCrossSectionSvg.innerHTML = `
+      <defs>
+        <pattern id="dlcCrossHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
+        </pattern>
+        <pattern id="bondInterfacePattern" width="12" height="6" patternUnits="userSpaceOnUse">
+          <path d="M0 3 L3 0 L6 3 L9 6 L12 3" fill="none" stroke="var(--accent-emerald)" stroke-width="1.5" opacity="0.6"/>
+        </pattern>
+      </defs>
+
+      <!-- PQC Layer -->
+      <rect x="${slabX}" y="${pqcY}" width="${slabW}" height="${pqcH}"
+        fill="rgba(6, 182, 212, 0.18)" stroke="var(--accent-cyan)" stroke-width="1.5" rx="3"/>
+      <text x="${slabX + slabW / 2}" y="${pqcY + pqcH / 2 + 5}" text-anchor="middle"
+        fill="var(--text-primary)" font-size="12" font-weight="700" font-family="var(--font-sans)">
+        PQC Slab (M40): ${h1} mm (E₁ = 30 GPa)
+      </text>
+
+      <!-- Bonded Interface -->
+      <line x1="${slabX}" y1="${dlcY}" x2="${slabX + slabW}" y2="${dlcY}"
+        stroke="var(--accent-emerald)" stroke-width="2.5" stroke-dasharray="6 3"/>
+      <rect x="${slabX}" y="${dlcY - 3}" width="${slabW}" height="6" fill="url(#bondInterfacePattern)"/>
+
+      <!-- DLC Layer -->
+      <rect x="${slabX}" y="${dlcY}" width="${slabW}" height="${dlcH}"
+        fill="rgba(234, 88, 12, 0.15)" stroke="var(--accent-amber)" stroke-width="1.5" rx="3"/>
+      <rect x="${slabX}" y="${dlcY}" width="${slabW}" height="${dlcH}" fill="url(#dlcCrossHatch)"/>
+      <text x="${slabX + slabW / 2}" y="${dlcY + dlcH / 2 + 5}" text-anchor="middle"
+        fill="var(--text-primary)" font-size="11.5" font-weight="700" font-family="var(--font-sans)">
+        DLC Sub-base: ${h2} mm (Bonded, No Polythene Sheet)
+      </text>
+
+      <!-- Neutral Axis Line -->
+      <line x1="${slabX - 25}" y1="${naY}" x2="${slabX + slabW + 25}" y2="${naY}"
+        stroke="#f43f5e" stroke-width="2" stroke-dasharray="4 2"/>
+      <circle cx="${slabX + slabW + 25}" cy="${naY}" r="3" fill="#f43f5e"/>
+      <text x="${slabX + slabW + 32}" y="${naY + 4}" fill="#f43f5e" font-size="10.5" font-weight="700" font-family="var(--font-mono)">
+        NA (d = ${d.toFixed(1)} mm)
+      </text>
+
+      <!-- Dimension Arrows on Left -->
+      <!-- PQC Dim -->
+      <line x1="${slabX - 12}" y1="${pqcY}" x2="${slabX - 12}" y2="${dlcY}" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+      <polyline points="${slabX - 15},${pqcY + 6} ${slabX - 12},${pqcY} ${slabX - 9},${pqcY + 6}" fill="none" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+      <polyline points="${slabX - 15},${dlcY - 6} ${slabX - 12},${dlcY} ${slabX - 9},${dlcY - 6}" fill="none" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+      <text x="${slabX - 18}" y="${pqcY + pqcH / 2 + 4}" text-anchor="end" fill="var(--accent-cyan)" font-size="10.5" font-weight="700" font-family="var(--font-mono)">
+        h₁ = ${h1}
+      </text>
+
+      <!-- DLC Dim -->
+      <line x1="${slabX - 12}" y1="${dlcY}" x2="${slabX - 12}" y2="${dlcY + dlcH}" stroke="var(--accent-amber)" stroke-width="1.5"/>
+      <polyline points="${slabX - 15},${dlcY + 6} ${slabX - 12},${dlcY} ${slabX - 9},${dlcY + 6}" fill="none" stroke="var(--accent-amber)" stroke-width="1.5"/>
+      <polyline points="${slabX - 15},${dlcY + dlcH - 6} ${slabX - 12},${dlcY + dlcH} ${slabX - 9},${dlcY + dlcH - 6}" fill="none" stroke="var(--accent-amber)" stroke-width="1.5"/>
+      <text x="${slabX - 18}" y="${dlcY + dlcH / 2 + 4}" text-anchor="end" fill="var(--accent-amber)" font-size="10.5" font-weight="700" font-family="var(--font-mono)">
+        h₂ = ${h2}
+      </text>
+
+      <!-- Bond Indicator Label -->
+      <rect x="${slabX + slabW - 145}" y="${dlcY - 12}" width="140" height="20" rx="4" fill="var(--bg-card)" stroke="var(--accent-emerald)" stroke-width="1"/>
+      <text x="${slabX + slabW - 75}" y="${dlcY + 2}" text-anchor="middle" fill="var(--accent-emerald)" font-size="9.5" font-weight="700">
+        MONOLITHIC BOND
+      </text>
+    `;
   }
 
   /**
@@ -1215,6 +2058,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // URL Hash / Workspace Deep Linking Support
+  function handleUrlHash() {
+    const rawHash = window.location.hash.replace('#', '').trim();
+    if (!rawHash) return;
+
+    if (rawHash === 'night' || rawHash === 'mode-night') {
+      const studioBtn = document.querySelector('.workspace-nav-btn[data-workspace="ws-studio"]');
+      if (studioBtn) studioBtn.click();
+      if (el.btnModeNight) el.btnModeNight.click();
+      return;
+    }
+    const wsBtn = document.querySelector('.workspace-nav-btn[data-workspace="' + rawHash + '"], .tab-btn[data-tab="' + rawHash + '"]');
+    if (wsBtn) {
+      wsBtn.click();
+      return;
+    }
+
+    const subBtn = document.querySelector('.subnav-btn[data-subtab="' + rawHash + '"]');
+    if (subBtn) {
+      const parentPane = subBtn.closest('.workspace-pane');
+      if (parentPane) {
+        const parentWsBtn = document.querySelector('.workspace-nav-btn[data-workspace="' + parentPane.id + '"]');
+        if (parentWsBtn) parentWsBtn.click();
+      }
+      subBtn.click();
+    }
+  }
+
+  window.addEventListener('hashchange', handleUrlHash);
+  setTimeout(handleUrlHash, 150);
 
   // Visualizer Day / Night Mode Toggle
   if (el.btnModeDay && el.btnModeNight && visualizer) {
@@ -1442,10 +2316,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Custom Table Inputs Reset Handlers
+  const btnResetBuc = document.getElementById("btnResetBucSpectrum");
+  if (btnResetBuc) {
+    btnResetBuc.addEventListener("click", () => {
+      currentParams.customBucReps = null;
+      if (currentParams.axleSpectrum) {
+        currentParams.axleSpectrum.single = JSON.parse(JSON.stringify(engine.defaultSpectrum.single));
+        currentParams.axleSpectrum.tandem = JSON.parse(JSON.stringify(engine.defaultSpectrum.tandem));
+      }
+      runCalculationPipeline();
+    });
+  }
+
+  const btnResetTdc = document.getElementById("btnResetTdcReps");
+  if (btnResetTdc) {
+    btnResetTdc.addEventListener("click", () => {
+      currentParams.customTdcReps = null;
+      runCalculationPipeline();
+    });
+  }
+
+  const btnResetSpec = document.getElementById("btnResetSpectrumTab");
+  if (btnResetSpec) {
+    btnResetSpec.addEventListener("click", () => {
+      currentParams.customBucReps = null;
+      currentParams.axleSpectrum = JSON.parse(JSON.stringify(engine.defaultSpectrum));
+      runCalculationPipeline();
+    });
+  }
+
   // Reset Buttons
   document.querySelectorAll("#btnReset, .btn-reset-trigger").forEach(btn => {
     btn.addEventListener("click", () => {
       currentParams = { ...IRC58_DATA.benchmark };
+      currentParams.customBucReps = null;
+      currentParams.customTdcReps = null;
+      currentParams.axleSpectrum = JSON.parse(JSON.stringify(engine.defaultSpectrum));
       populateStatesDropdown();
       syncInputsFromState();
       runCalculationPipeline();
@@ -1473,10 +2380,221 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Load DLC 6000 CVPD Benchmark Button
+  if (el.btnLoadDlcBenchmark) {
+    el.btnLoadDlcBenchmark.addEventListener("click", () => {
+      loadExcel2Dlc();
+    });
+  }
+
+  // Standard Design Scenarios Dropdown Popover Listeners
+  if (el.btnScenarioDropdown) {
+    el.btnScenarioDropdown.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleScenarioDropdown();
+    });
+  }
+  if (el.btnCloseScenarioDropdown) {
+    el.btnCloseScenarioDropdown.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleScenarioDropdown(false);
+    });
+  }
+  document.addEventListener("click", (e) => {
+    if (el.scenarioDropdownMenu && el.scenarioDropdownMenu.style.display !== "none") {
+      if (!el.scenarioDropdownMenu.contains(e.target) && !el.btnScenarioDropdown?.contains(e.target)) {
+        toggleScenarioDropdown(false);
+      }
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (el.scenarioDropdownMenu && el.scenarioDropdownMenu.style.display !== "none") {
+        toggleScenarioDropdown(false);
+      }
+    }
+  });
+
+  // 4 Scenario Benchmark Suite Listeners
+  if (el.btnCaseExcel1Trial1) {
+    el.btnCaseExcel1Trial1.addEventListener("click", () => {
+      loadExcel1Trial1();
+    });
+  }
+  if (el.btnCaseExcel1Trial2) {
+    el.btnCaseExcel1Trial2.addEventListener("click", () => {
+      loadExcel1Trial2();
+    });
+  }
+  if (el.btnCaseExcel2Dlc) {
+    el.btnCaseExcel2Dlc.addEventListener("click", () => {
+      loadExcel2Dlc();
+    });
+  }
+  if (el.btnCaseExcel2Bonded) {
+    el.btnCaseExcel2Bonded.addEventListener("click", () => {
+      loadExcel2Bonded();
+    });
+  }
+
+  // Climatic Zone Dropdown Listener
+  if (el.selectClimaticZone) {
+    el.selectClimaticZone.addEventListener("change", (e) => {
+      const zone = e.target.value;
+      currentParams.zone = zone;
+      if (el.selectZone) el.selectZone.value = zone;
+      if (el.badgeStateZone) el.badgeStateZone.textContent = `Zone ${zone}`;
+      if (el.geoZoneDescription) {
+        el.geoZoneDescription.textContent = ZONE_DESCRIPTIONS[zone] || `IRC:58 Climatic Zone ${zone}`;
+      }
+      runCalculationPipeline();
+      showAppToast(`Updated IRC:58 Climatic Zone to Zone ${zone}`);
+    });
+  }
+
+  // Theory & PDF Formulas Reference Modal Listeners
+  if (el.btnOpenTheoryModal) {
+    el.btnOpenTheoryModal.addEventListener("click", () => {
+      if (el.theoryModal) el.theoryModal.style.display = "flex";
+    });
+  }
+  if (el.btnCloseTheoryModal) {
+    el.btnCloseTheoryModal.addEventListener("click", () => {
+      if (el.theoryModal) el.theoryModal.style.display = "none";
+    });
+  }
+  if (el.theoryModal) {
+    el.theoryModal.addEventListener("click", (e) => {
+      if (e.target === el.theoryModal) el.theoryModal.style.display = "none";
+    });
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && el.theoryModal && el.theoryModal.style.display === "flex") {
+      el.theoryModal.style.display = "none";
+    }
+  });
+  document.querySelectorAll(".btn-open-theory-trigger").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (el.theoryModal) el.theoryModal.style.display = "flex";
+    });
+  });
+
+  // Quick-Start Guide ("How to Use") Helper Functions & Event Listeners
+  function showAndScrollToHowToUseGuide() {
+    const guide = document.getElementById("sectionHowToUse");
+    if (!guide) return;
+    guide.style.display = "block";
+    guide.classList.remove("is-hidden");
+    if (guide.classList.contains("is-minimized")) {
+      guide.classList.remove("is-minimized");
+      const txt = document.getElementById("textGuideToggle");
+      const icon = document.getElementById("iconGuideToggle");
+      if (txt) txt.textContent = "Minimize";
+      if (icon) icon.innerHTML = '<polyline points="18 15 12 9 6 15"></polyline>';
+    }
+    guide.scrollIntoView({ behavior: "smooth", block: "start" });
+    guide.classList.remove("guide-highlight-glow");
+    void guide.offsetWidth;
+    guide.classList.add("guide-highlight-glow");
+    setTimeout(() => {
+      if (guide) guide.classList.remove("guide-highlight-glow");
+    }, 2500);
+  }
+
+  function toggleHowToUseGuide() {
+    const guide = document.getElementById("sectionHowToUse");
+    if (!guide) return;
+    const isMin = guide.classList.toggle("is-minimized");
+    const txt = document.getElementById("textGuideToggle");
+    const icon = document.getElementById("iconGuideToggle");
+    if (txt) txt.textContent = isMin ? "Expand" : "Minimize";
+    if (icon) {
+      icon.innerHTML = isMin
+        ? '<polyline points="6 9 12 15 18 9"></polyline>'
+        : '<polyline points="18 15 12 9 6 15"></polyline>';
+    }
+  }
+
+  function hideHowToUseGuide() {
+    const guide = document.getElementById("sectionHowToUse");
+    if (!guide) return;
+    guide.style.display = "none";
+    guide.classList.add("is-hidden");
+    if (typeof showAppToast === "function") {
+      showAppToast("Quick-Start Guide hidden. Click 'How to Use' in the corner anytime to view.");
+    }
+  }
+
+  // Bind to header corner button and floating corner pill
+  const btnCornerGuide = document.getElementById("btnScrollToGuide");
+  if (btnCornerGuide) {
+    btnCornerGuide.addEventListener("click", (e) => {
+      e.preventDefault();
+      showAndScrollToHowToUseGuide();
+    });
+  }
+
+  const btnToggleGuide = document.getElementById("btnToggleHowToUse");
+  if (btnToggleGuide) {
+    btnToggleGuide.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleHowToUseGuide();
+    });
+  }
+
+  const btnDismissGuide = document.getElementById("btnDismissHowToUse");
+  if (btnDismissGuide) {
+    btnDismissGuide.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      hideHowToUseGuide();
+    });
+  }
+
+  // Composite Bonded Studio Event Listeners
+  const compositeInputs = [
+    el.sliderCompH1,
+    el.sliderCompH2,
+    el.inputCompTargetH,
+    el.inputCompE1,
+    el.inputCompMu1,
+    el.inputCompDlcFck,
+    el.selectCompDlcModel,
+    el.inputCompMu2
+  ];
+
+  compositeInputs.forEach((inp) => {
+    if (inp) {
+      inp.addEventListener("input", renderCompositeBondedStudio);
+      inp.addEventListener("change", renderCompositeBondedStudio);
+    }
+  });
+
+  // Dynamic DLC subbase condition visibility
+  if (el.selectSubbaseType) {
+    const syncDlcCondition = () => {
+      if (el.groupDlcBondType) {
+        el.groupDlcBondType.style.display = el.selectSubbaseType.value === "dlc" ? "block" : "none";
+      }
+    };
+    el.selectSubbaseType.addEventListener("change", syncDlcCondition);
+    syncDlcCondition();
+  }
+
+  if (el.selectDlcBondType) {
+    el.selectDlcBondType.addEventListener("change", (e) => {
+      if (e.target.value === "bonded") {
+        showAppToast("Composite Bonded Section Selected — PQC depth can be reduced to 275mm!");
+      }
+    });
+  }
+
   // Initialize
   initTheme();
   populateStatesDropdown();
   initCustomSelects();
   syncInputsFromState();
   runCalculationPipeline();
+  renderCompositeBondedStudio();
 });
