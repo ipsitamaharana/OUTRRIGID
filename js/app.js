@@ -47,6 +47,46 @@ document.addEventListener("DOMContentLoaded", () => {
     badgeBucTemp: document.getElementById("badgeBucTemp"),
     badgeTdcTemp: document.getElementById("badgeTdcTemp"),
 
+        // Full-Stack Cloud & Auth (MongoDB Atlas)
+    btnCloudProjects: document.getElementById("btnCloudProjects"),
+    cloudBtnText: document.getElementById("cloudBtnText"),
+    authStatusDot: document.getElementById("authStatusDot"),
+    cloudModal: document.getElementById("cloudModal"),
+    btnCloseCloudModal: document.getElementById("btnCloseCloudModal"),
+    cloudAuthAlert: document.getElementById("cloudAuthAlert"),
+    guestAuthView: document.getElementById("guestAuthView"),
+    userProjectsView: document.getElementById("userProjectsView"),
+    tabBtnSignIn: document.getElementById("tabBtnSignIn"),
+    tabBtnRegister: document.getElementById("tabBtnRegister"),
+    formSignIn: document.getElementById("formSignIn"),
+    formRegister: document.getElementById("formRegister"),
+    loginEmail: document.getElementById("loginEmail"),
+    loginPassword: document.getElementById("loginPassword"),
+    regFullName: document.getElementById("regFullName"),
+    regEmail: document.getElementById("regEmail"),
+    regPassword: document.getElementById("regPassword"),
+    regOrg: document.getElementById("regOrg"),
+    regDesignation: document.getElementById("regDesignation"),
+    userAvatarInitial: document.getElementById("userAvatarInitial"),
+    userDisplayName: document.getElementById("userDisplayName"),
+    userOrgDisplay: document.getElementById("userOrgDisplay"),
+    userProjectCount: document.getElementById("userProjectCount"),
+    btnSignOut: document.getElementById("btnSignOut"),
+    tabBtnMyProjects: document.getElementById("tabBtnMyProjects"),
+    tabBtnSaveCurrent: document.getElementById("tabBtnSaveCurrent"),
+    paneMyProjects: document.getElementById("paneMyProjects"),
+    paneSaveCurrent: document.getElementById("paneSaveCurrent"),
+    paneProjectHistory: document.getElementById("paneProjectHistory"),
+    projectListContainer: document.getElementById("projectListContainer"),
+    formSaveProject: document.getElementById("formSaveProject"),
+    cloudProjectName: document.getElementById("cloudProjectName"),
+    cloudProjectCode: document.getElementById("cloudProjectCode"),
+    cloudProjectDesc: document.getElementById("cloudProjectDesc"),
+    snapshotChips: document.getElementById("snapshotChips"),
+    btnBackToProjects: document.getElementById("btnBackToProjects"),
+    historyProjectTitle: document.getElementById("historyProjectTitle"),
+    historyTableContainer: document.getElementById("historyTableContainer"),
+
     // Design Benchmark Suite & Theory Reference
     btnScenarioDropdown: document.getElementById("btnScenarioDropdown"),
     scenarioDropdownMenu: document.getElementById("scenarioDropdownMenu"),
@@ -2589,6 +2629,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Bridge for Cloud Projects & MongoDB Atlas persistence
+  window.OUTRRIGID_APP = {
+    getParams: () => currentParams,
+    setParams: (newParams) => {
+      currentParams = { ...currentParams, ...newParams };
+      syncInputsFromState();
+      runCalculationPipeline();
+      renderCompositeBondedStudio();
+    },
+    getLatestResult: () => latestResult,
+    showToast: (msg, type) => showAppToast(msg, type),
+  };
 
   // Initialize
   initTheme();

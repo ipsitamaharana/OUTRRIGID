@@ -1,2 +1,16 @@
 node_modules/
 .DS_Store
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Backups
+backup/
+
+# Backups
+backup/

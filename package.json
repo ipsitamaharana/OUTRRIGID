@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "node tests/irc58_engine.test.js && node tests/models_and_security.test.js",
+    "test:api": "node tests/api_auth_project.test.js",
+    "test:all": "node tests/irc58_engine.test.js && node tests/models_and_security.test.js && node tests/api_auth_project.test.js"
   },
   "keywords": [
     "irc58",
@@ -18,7 +21,13 @@
   "author": "Antigravity Engineering",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "dotenv": "^18.0.9",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.7.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.4"
   }
 }

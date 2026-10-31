@@ -3776,3 +3776,408 @@ html.dark-theme .scenario-popover-menu {
 .trial-quick-options-row .formula-btn-chip:hover {
   transform: translateY(-1px);
 }
+
+
+/* ==========================================================================
+   Full-Stack Cloud Projects & Authentication Modal Styling
+   ========================================================================== */
+
+.btn-cloud-corner {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  background: rgba(59, 102, 255, 0.12);
+  border: 1px solid rgba(59, 102, 255, 0.3);
+  border-radius: 9999px !important;
+  color: #3b66ff;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-cloud-corner:hover {
+  background: rgba(59, 102, 255, 0.22);
+  border-color: #3b66ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 102, 255, 0.25);
+  color: #3b66ff;
+}
+
+.auth-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.auth-status-dot.online {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+.auth-status-dot.offline {
+  background: #f59e0b;
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.6);
+}
+
+.cloud-modal-dialog {
+  max-width: 720px;
+}
+
+.cloud-modal-body {
+  padding: 20px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cloud-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: rgba(59, 102, 255, 0.08);
+  border: 1px solid rgba(59, 102, 255, 0.2);
+}
+
+.cloud-info-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.cloud-info-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.cloud-info-content p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.cloud-alert-box {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  animation: fadeIn 0.2s ease;
+}
+
+.cloud-alert-box.success {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #059669;
+}
+
+.cloud-alert-box.error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+}
+
+.cloud-tabs-nav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+
+.cloud-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cloud-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.cloud-tab-btn.active {
+  color: #3b66ff;
+  border-bottom-color: #3b66ff;
+}
+
+.cloud-form-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.cloud-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-modal-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.btn-modal-action.primary {
+  background: #3b66ff;
+  color: #ffffff;
+  border-color: #3b66ff;
+}
+
+.btn-modal-action.primary:hover {
+  background: #2d54e8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 102, 255, 0.3);
+}
+
+.btn-modal-action.subtle {
+  background: var(--bg-card-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-subtle);
+}
+
+.btn-modal-action.subtle:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.btn-modal-action.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.btn-modal-action.danger:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* User Profile Header in Modal */
+.user-profile-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-card-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.user-profile-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #3b66ff;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-subtext {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* Cloud Projects List Cards */
+.cloud-project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.cloud-project-card {
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.cloud-project-card:hover {
+  border-color: #3b66ff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.project-card-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.project-meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.project-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg-card-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.project-chip.safe {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.project-chip.unsafe {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.project-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cloud-empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted);
+}
+
+.cloud-empty-state p {
+  margin: 8px 0 16px;
+  font-size: 13px;
+}
+
+.cloud-current-specs-preview {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--bg-card-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.cloud-current-specs-preview h5 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.snapshot-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.snapshot-chip {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+/* History Modal / Drawer */
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.history-header h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.history-table-wrapper {
+  max-height: 380px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.history-table th {
+  background: var(--bg-card-secondary);
+  padding: 9px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.history-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.history-table tr:hover {
+  background: var(--bg-card-secondary);
+}
+
+.history-table td.mono {
+  font-family: var(--font-mono);
+}
