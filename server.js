@@ -11,7 +11,7 @@ const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 
-const { connectDB, getDbStatus } = require("./server/db");
+const { connectDB, reconnectDB, getDbStatus } = require("./server/db");
 const { CalculationEngine, TABLES, DEFAULT_SPECTRUM } = require("./server/engine");
 const { ProjectStore } = require("./server/storage");
 const { apiLimiter, optimizeLimiter } = require("./server/middleware/rateLimiter");
@@ -58,6 +58,27 @@ app.get("/api/v1/health", (req, res) => {
       connected: dbStatus.connected,
       host: dbStatus.host,
       databaseName: dbStatus.databaseName,
+      egressIp: dbStatus.egressIp,
+      lastError: dbStatus.lastError,
+      lastAttempt: dbStatus.lastAttempt,
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Database Reconnection Diagnostic Endpoint
+app.all("/api/v1/health/reconnect", async (req, res) => {
+  await reconnectDB();
+  const dbStatus = getDbStatus();
+  res.json({
+    status: dbStatus.connected ? "connected" : "retry_failed",
+    database: {
+      connected: dbStatus.connected,
+      host: dbStatus.host,
+      databaseName: dbStatus.databaseName,
+      egressIp: dbStatus.egressIp,
+      lastError: dbStatus.lastError,
+      lastAttempt: dbStatus.lastAttempt,
     },
     timestamp: new Date().toISOString(),
   });
